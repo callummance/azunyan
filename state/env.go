@@ -3,7 +3,6 @@ package state
 import (
 	"gopkg.in/mgo.v2"
 	"log"
-	"sync"
 	"os"
 	"github.com/callummance/azunyan/db"
 	"github.com/callummance/azunyan/config"
@@ -13,7 +12,6 @@ type Env struct {
 	DbSession 		*mgo.Session
 	Logger    		*log.Logger
 	Config    		config.Config
-	OauthSessions  	*sync.Map
 }
 
 func (e *Env) GetDbConfig() config.DbConfig {
