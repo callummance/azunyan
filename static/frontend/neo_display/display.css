@@ -1,0 +1,170 @@
+
+#overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: -0px;
+    bottom: -0px;
+    z-index: 10;
+    visibility: visible;
+    background-size: cover;
+    background: url("../images/azunyan.gif") no-repeat center;
+}
+
+#leftbar {
+    position: absolute;
+    top:0;
+    left:0;
+    width: 380px;
+    padding: 0 10px;
+    height: 100%;
+}
+
+#leftbar img {
+    bottom: 10px;
+    width: 380px;
+    position:absolute;
+}
+
+#message {
+    height: 60%;
+}
+
+#mainbody{
+    position: absolute;
+    top:0;
+    left:400px;
+    right: 0;
+    height: 100%;
+    margin: 0;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background: deepskyblue; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(left, deepskyblue, white); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(left, deepskyblue, white); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(left, deepskyblue, white); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(left, deepskyblue, white); /* Standard syntax */
+}
+
+#nowplaying{
+    border-radius: 10px;
+    margin:20px;
+    position: absolute;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    top:0;
+    left:0;
+    right:0;
+    text-align: center;
+    color: white;
+    height: 200px;
+    background: #2b2b2b;
+}
+
+#nowplaying h1 {
+    font-size: 60pt;
+}
+
+#nowplaying h2 {
+    font-size: 40pt;
+    margin:0;
+}
+
+#nowplaying h3 {
+    font-size: 20pt;
+    margin:0;
+    color:gray;
+}
+
+#queue{
+    position: absolute;
+    top:200px;
+    left:0;
+    right:0;
+    bottom:0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+}
+
+#overlay img{
+    position:absolute;
+    top:50%;
+    left:200px;
+    height: 400px;
+    margin-top: -200px;
+
+}
+
+.queueitem {
+    border-radius: 5px;
+    margin: 0 auto;
+    height:50px;
+    width: 90%;
+    background: #4e5664;
+    position: absolute;
+}
+
+.itemtitle {
+    font-size: 25px;
+    margin-left: 10px;
+    width:70%;
+    color: white;
+}
+
+.itemartist {
+    font-size: 15px;
+    margin-left: 10px;
+    width:70%;
+    color: white;
+}
+
+.itemsingers {
+    left:70%;
+    width:30%;
+    position: absolute;
+    top:10px;
+    font-size: 20px;
+    color: lightgrey;
+}
+
+.marquee {
+    height: 50px;
+    overflow: hidden;
+    position: relative;
+}
+.marquee h1 {
+    margin-top: 20px;
+    margin-bottom: 5px;
+    line-height: 50px;
+    text-align: center;
+    /* Starting position */
+    -moz-transform:translateX(100%);
+    -webkit-transform:translateX(100%);
+    transform:translateX(100%);
+    /* Apply animation to this element */
+    -moz-animation: example1 15s linear infinite;
+    -webkit-animation: example1 15s linear infinite;
+    animation: example1 15s linear infinite;
+    white-space: nowrap;
+}
+/* Move it (define the animation) */
+@-moz-keyframes example1 {
+    0%   { -moz-transform: translateX(100%); }
+    100% { -moz-transform: translateX(-100%); }
+}
+@-webkit-keyframes example1 {
+    0%   { -webkit-transform: translateX(100%); }
+    100% { -webkit-transform: translateX(-100%); }
+}
+@keyframes example1 {
+    0%   {
+        -moz-transform: translateX(100%); /* Firefox bug fix */
+        -webkit-transform: translateX(100%); /* Firefox bug fix */
+        transform: translateX(100%);
+    }
+    100% {
+        -moz-transform: translateX(-100%); /* Firefox bug fix */
+        -webkit-transform: translateX(-100%); /* Firefox bug fix */
+        transform: translateX(-100%);
+    }
+}

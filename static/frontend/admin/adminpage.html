@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <link rel = "stylesheet" type = "text/css" href = "./adminstyle.css">
+
+    <title>Mugi - Admin</title>
+</head>
+<body>
+
+<h1 id = "nowPlaying">Now Playing</h1>
+<div id = "controls">
+    <button id = "advance" class = "settings">Advance</button>
+    <br>
+    <button id = "activate" class = "settings">Activate</button>
+    <button id = "deactivate" class = "settings">Deactivate</button>
+    <br>
+    <button id = "activater" class = "settings">Activate Requests</button>
+    <button id = "deactivater" class = "settings">Deactivate Requests</button>
+    <br><br>
+    <button id = "updateActivate" class = "settings">Add new tracks</button>
+    <br><br>
+    <button id = "queueActivate" class = "settings">Modify Queue</button>
+</div>
+
+
+
+<!-- The Modal -->
+<div id="updateModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id = updateBox>
+            <textarea name = "New Tracks" id = "jsonField" class = "textBox"></textarea><br>
+            <button id = "sendUpdate" class = "settings">Submit</button>
+        </div>
+    </div>
+</div>
+<!-- The Modal -->
+<div id="queueModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="table" id = "queueTable">
+            <div class="row header">
+                <div class="cell">
+                    Song Title
+                </div>
+                <div class="cell">
+                    Singers
+                </div>
+                <div class="cell">
+                    Prio
+                </div>
+                <div class="cell">
+                    Mod
+                </div>
+                <div class="cell">
+                    Del
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="./admin.js"></script>
+</body>
+</html>
