@@ -23,7 +23,7 @@ func GetPriority(env state.Env, request models.Request) float64 {
 	for _, match := range matches {
 		timeDiff := request.ReqTime.Sub(match.ReqTime).Minutes()
 		prioDecrement := float64(env.GetConfig().KaraokeConfig.TimeMultiplier)/timeDiff
-		prio -= prioDecrement
+		//prio -= prioDecrement
 	}
 
 	prio += time.Now().Sub(request.ReqTime).Minutes() * float64(env.GetConfig().KaraokeConfig.WaitMultiplier)
