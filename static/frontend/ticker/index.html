@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        (function() {
+            DisplayClient();
+        }());
+
+        function DisplayClient() {
+            this.cur = {};
+            this.source = new window.EventSource('/api/queuestream');
+
+            let client = this;
+
+            //Listen for SSEs
+            this.source.addEventListener('cur', function(e) {
+                client.cur = JSON.parse(e.data);
+                UpdateTicker(client.cur)
+            });
+        }
+
+        function UpdateTicker(newSong) {
+            let title   = newSong.songtitle;
+            let artist  = newSong.songartist;
+            let singers = newSong.singers.join(", ");
+
+            let resText = title + " - " + artist + " - " + singers;
+            $('#content').text(resText);
+        }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:700" rel="stylesheet">
+    <style>
+        .marquee {
+            height: 50px;
+            overflow: hidden;
+            position: relative;
+        }
+        .marquee h1 {
+            color: black;
+            font-family: 'Roboto', sans-serif;
+            margin-top: 0;
+            margin-bottom: 5px;
+            line-height: 50px;
+            text-align: center;
+            /* Starting position */
+            -moz-transform:translateX(100%);
+            -webkit-transform:translateX(100%);
+            transform:translateX(100%);
+            /* Apply animation to this element */
+            -moz-animation: example1 15s linear infinite;
+            -webkit-animation: example1 15s linear infinite;
+            animation: example1 15s linear infinite;
+            white-space: nowrap;
+        }
+        /* Move it (define the animation) */
+        @-moz-keyframes example1 {
+            0%   { -moz-transform: translateX(100%); }
+            100% { -moz-transform: translateX(-100%); }
+        }
+        @-webkit-keyframes example1 {
+            0%   { -webkit-transform: translateX(100%); }
+            100% { -webkit-transform: translateX(-100%); }
+        }
+        @keyframes example1 {
+            0%   {
+                -moz-transform: translateX(100%); /* Firefox bug fix */
+                -webkit-transform: translateX(100%); /* Firefox bug fix */
+                transform: translateX(100%);
+            }
+            100% {
+                -moz-transform: translateX(-100%); /* Firefox bug fix */
+                -webkit-transform: translateX(-100%); /* Firefox bug fix */
+                transform: translateX(-100%);
+            }
+        }
+    </style>
+
+</head>
+<body>
+
+<div class = "marquee">
+    <h1 id = "content"></h1>
+</div>
+
+<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+
+</body>
+</html>
