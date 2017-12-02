@@ -19,7 +19,6 @@ func ForwardRoot(c *gin.Context) {
 	if (state.RequestsActive) {
 		c.Redirect(302, "/static/request/index.html")
 	} else {
-		c.Redirect(302, "/songlist")
+		c.Redirect(302, "/static/songlist")
 	}
-
 }
