@@ -13,17 +13,13 @@ func GetPriority(env state.Env, request models.Request) float64 {
 
 	previousSongReqs := db.GetPreviousRequestsBySong(&env, request.Song, request.ReqTime)
 
-	var previousSingerReqs []models.Request
-	for _, singer := range request.Singers {
-		previousSingerReqs = append(previousSingerReqs, db.GetPreviousRequestsBySinger(&env, singer, request.ReqTime)...)
-	}
-
-	matches := append(previousSongReqs, previousSingerReqs...)
-
-	for _, match := range matches {
-		timeDiff := request.ReqTime.Sub(match.ReqTime).Minutes()
-		_ = float64(env.GetConfig().KaraokeConfig.TimeMultiplier)/timeDiff
-		//prio -= prioDecrement
+	for _, match := range previousSongReqs {
+		timeDiff := request.ReqTime.Sub(match.ReqTime).Seconds()
+                if timeDiff < 1 {
+                  timeDiff = 1
+                }
+                prioDecrement := float64(env.GetConfig().KaraokeConfig.TimeMultiplier * 60)/float64(timeDiff)
+		prio -= prioDecrement
 	}
 
 	prio += time.Now().Sub(request.ReqTime).Minutes() * float64(env.GetConfig().KaraokeConfig.WaitMultiplier)
