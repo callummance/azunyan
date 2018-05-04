@@ -1,0 +1,21 @@
+{
+  "name": "azunyan_frontend",
+  "homepage": "https://github.com/callummance/azunyan",
+  "authors": [
+    "Callum <callummance@gmail.com>"
+  ],
+  "description": "frontend for the azunyan karaoke queue system",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "flag-icon-css": "^3.1.0",
+    "tingle": "^0.13.2"
+  }
+}
