@@ -1,12 +1,13 @@
 package db
 
 import (
-	"io/ioutil"
-	"github.com/callummance/azunyan/models"
 	"encoding/json"
-	"gopkg.in/mgo.v2/bson"
-	"gopkg.in/mgo.v2"
 	"fmt"
+	"io/ioutil"
+
+	"github.com/callummance/azunyan/models"
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 func ImportJSONSongList(env databaseConfig, fileLoc string) {
@@ -21,17 +22,17 @@ func ImportJSONSongList(env databaseConfig, fileLoc string) {
 
 	var count int
 
-	for _, song := range res  {
-		songObj := models.Song{Id: bson.NewObjectId(), Title: song["title"], Artist: song["artist"]}
+	for _, song := range res {
+		songObj := models.Song{ID: bson.NewObjectId(), Title: song["title"], Artist: song["artist"]}
 		col := getCollection(env)
 		if checkSongExists(env, songObj) {
 			continue
 		} else {
 			err := col.Insert(songObj)
 			if err != nil {
-				env.GetLog().Printf("Could not insert song %q, encountered error %q", songObj, err)
+				env.GetLog().Printf("Could not insert song %+v, encountered error %q", songObj, err)
 			} else {
-				count += 1
+				count++
 			}
 		}
 	}
@@ -48,10 +49,10 @@ func GetSongs(env databaseConfig) []models.Song {
 	return songs
 }
 
-func GetSongById(env databaseConfig, sid bson.ObjectId) (*models.Song, error) {
+func GetSongByID(env databaseConfig, sid bson.ObjectId) (*models.Song, error) {
 	var res models.Song
 	err := getCollection(env).FindId(sid).One(&res)
-	if err != nil && err.Error() == "not found"  {
+	if err != nil && err.Error() == "not found" {
 		return nil, nil
 	} else if err != nil {
 		env.GetLog().Printf("Failed to check database for song id %q due to reason '%s'", sid, err)
@@ -60,7 +61,6 @@ func GetSongById(env databaseConfig, sid bson.ObjectId) (*models.Song, error) {
 		return &res, nil
 	}
 }
-
 
 func getCollection(env databaseConfig) *mgo.Collection {
 	return env.GetSession().DB(env.GetDbConfig().DatabaseName).C("song")

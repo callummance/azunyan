@@ -1,16 +1,17 @@
 package db
 
 import (
-	"github.com/callummance/azunyan/models"
 	"fmt"
+	"time"
+
+	"github.com/callummance/azunyan/models"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	"time"
 )
 
 func InsertRequest(env databaseConfig, request models.Request) error {
 	//Check the song is valid
-	song, err := GetSongById(env, request.Song)
+	song, err := GetSongByID(env, request.Song)
 	if err != nil {
 		return err
 	} else if song == nil {
@@ -20,12 +21,10 @@ func InsertRequest(env databaseConfig, request models.Request) error {
 		//Song exists \o/
 		err := getReqCollection(env).Insert(request)
 		if err != nil {
-			env.GetLog().Printf("Could not insert request %q; encountered error %q", request, err)
+			env.GetLog().Printf("Could not insert request %+v; encountered error %q", request, err)
 			return fmt.Errorf("request for song %s could not be inserted due to error %s", request.Song, err)
-		} else {
-			return nil
 		}
-
+		return nil
 	}
 }
 
@@ -34,7 +33,7 @@ func GetPreviousRequestsBySong(env databaseConfig, songId bson.ObjectId, submitt
 	col := getReqCollection(env)
 	q := col.Find(bson.M{
 		"songid": songId,
-		"time": bson.M{"$lt": submitted},
+		"time":   bson.M{"$lt": submitted},
 	})
 	err := q.All(&res)
 	if err != nil {
@@ -48,7 +47,7 @@ func GetPreviousRequestsBySinger(env databaseConfig, singer string, submitted ti
 	col := getReqCollection(env)
 	q := col.Find(bson.M{
 		"singers": singer,
-		"time": bson.M{"$lt": submitted},
+		"time":    bson.M{"$lt": submitted},
 	})
 	err := q.All(&res)
 	if err != nil {

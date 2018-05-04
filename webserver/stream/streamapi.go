@@ -1,15 +1,15 @@
 package stream
 
 import (
-	"github.com/gin-gonic/gin"
 	"io"
-	"github.com/callummance/azunyan/state"
+
 	"github.com/callummance/azunyan/db"
 	"github.com/callummance/azunyan/models"
-	"fmt"
+	"github.com/callummance/azunyan/state"
+	"github.com/gin-gonic/gin"
 )
 
-func GetSub (c *gin.Context) {
+func GetSub(c *gin.Context) {
 	env, ok := c.MustGet("env").(*state.Env)
 	if !ok {
 		env.Logger.Printf("Failed to grab environment from Context variable")
@@ -34,7 +34,7 @@ func GetSub (c *gin.Context) {
 	})
 }
 
-func sendInitial (env *state.Env, listener chan interface{}) {
+func sendInitial(env *state.Env, listener chan interface{}) {
 	queued := db.GetQueued(env)
 	var abbQueue []models.AbbreviatedQueueItem
 
@@ -53,14 +53,13 @@ func sendInitial (env *state.Env, listener chan interface{}) {
 	}
 
 	listener <- BroadcastData{
-		Name: "queue",
+		Name:    "queue",
 		Content: abbQueue,
 	}
 	listener <- BroadcastData{
-		Name:"active",
-		Content:state.IsActive,
+		Name:    "active",
+		Content: state.IsActive,
 	}
-	fmt.Print("here")
 	if state != nil && state.NowPlaying != nil {
 		song, err := db.GetSongById(env, state.NowPlaying.Song)
 		if err != nil {
