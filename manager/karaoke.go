@@ -1,101 +1,98 @@
 package manager
 
 import (
-	"gopkg.in/mgo.v2/bson"
 	"time"
-	"fmt"
-	"github.com/callummance/azunyan/webserver/stream"
-	"github.com/callummance/azunyan/models"
+
 	"github.com/callummance/azunyan/db"
-	"github.com/callummance/azunyan/state"
+	"github.com/callummance/azunyan/models"
+	"gopkg.in/mgo.v2/bson"
 )
 
-func AddRequest (e *state.Env, singers []string, song string) {
+func AddRequest(m *KaraokeManager, singers []string, song string) {
 	req := models.Request{
 		ReqId:       bson.NewObjectId(),
 		ReqTime:     time.Now(),
 		Singers:     singers,
 		Song:        bson.ObjectIdHex(song),
 		PriorityMod: 0,
-		Priority:	 0,
+		Priority:    0,
 		PlayedTime:  nil,
 	}
-	err := db.InsertRequest(e, req)
+	err := db.InsertRequest(m, req)
 	if err != nil {
-		fmt.Errorf("Could not insert request for song %s due to error %s", song, err)
+		m.Logger.Printf("Could not insert request for song %s due to error %s", song, err)
 	}
-	UpdatePriorities(*e)
-	UpdateListenersQueue(e)
+	UpdatePriorities(m)
+	UpdateListenersQueue(m)
 }
 
-func SetActive(e *state.Env, newActiveState bool) error {
-	newstate, err := db.GetEngineState(e, e.Config.KaraokeConfig.SessionName)
+func SetActive(m *KaraokeManager, newActiveState bool) error {
+	newstate, err := db.GetEngineState(m, m.GetConfig().KaraokeConfig.SessionName)
 	if err != nil {
-		e.Logger.Printf("Failed to get session data due to error %q", err)
+		m.Logger.Printf("Failed to get session data due to error %q", err)
 	}
 	newstate.IsActive = newActiveState
-	err = db.UpdateEngineState(e, *newstate)
+	err = db.UpdateEngineState(m, *newstate)
 	if err != nil {
-		e.Logger.Printf("Failed to activate manager due to error %q", err)
+		m.Logger.Printf("Failed to activate manager due to error %q", err)
 		return err
 	} else {
-		stream.SendBroadcast(stream.BroadcastData{
-			Name: "active",
+		m.SendBroadcast(BroadcastData{
+			Name:    "active",
 			Content: newActiveState,
 		})
 		return nil
 	}
 }
 
-
-func SetReqActive(e *state.Env, newActiveState bool) error {
-	state, err := db.GetEngineState(e, e.Config.KaraokeConfig.SessionName)
+func SetReqActive(m *KaraokeManager, newActiveState bool) error {
+	state, err := db.GetEngineState(m, m.Config.KaraokeConfig.SessionName)
 	if err != nil {
-		e.Logger.Printf("Failed to get session data due to error %q", err)
+		m.Logger.Printf("Failed to get session data due to error %q", err)
 	}
 	state.RequestsActive = newActiveState
-	err = db.UpdateEngineState(e, *state)
+	err = db.UpdateEngineState(m, *state)
 	if err != nil {
-		e.Logger.Printf("Failed to activate manager due to error %q", err)
+		m.Logger.Printf("Failed to activate manager due to error %q", err)
 		return err
 	} else {
 		return nil
 	}
 }
 
-func UpdateListenersQueue(env *state.Env) {
-	queued := db.GetQueued(env)
+func UpdateListenersQueue(m *KaraokeManager) {
+	queued := db.GetQueued(m)
 	var abbQueue []models.AbbreviatedQueueItem
 
 	for _, item := range queued {
-		song, err := db.GetSongById(env, item.Song)
+		song, err := db.GetSongByID(m, item.Song)
 		if err != nil {
-			env.Logger.Printf("Error whilst retrieving queued songs list: %q", err)
+			m.Logger.Printf("Error whilst retrieving queued songs list: %q", err)
 			continue
 		}
 		abbQueue = append(abbQueue, item.Abbreviate(*song))
 	}
 
 	//Send updates
-	stream.SendBroadcast(stream.BroadcastData{
-		Name: "queue",
+	m.SendBroadcast(BroadcastData{
+		Name:    "queue",
 		Content: abbQueue,
 	})
 }
 
-func UpdateListenersCur(env *state.Env) {
-	state, err := db.GetEngineState(env, env.Config.KaraokeConfig.SessionName)
+func UpdateListenersCur(m *KaraokeManager) {
+	state, err := db.GetEngineState(m, m.Config.KaraokeConfig.SessionName)
 	if err != nil {
-		env.Logger.Printf("Failed to get session data due to error %q", err)
+		m.Logger.Printf("Failed to get session data due to error %q", err)
 	}
-	song, err := db.GetSongById(env, state.NowPlaying.Song)
+	song, err := db.GetSongByID(m, state.NowPlaying.Song)
 	if err != nil {
-		env.Logger.Printf("Error whilst retrieving queued songs list: %q", err)
+		m.Logger.Printf("Error whilst retrieving queued songs list: %q", err)
 	}
 
 	//Send updates
-	stream.SendBroadcast(stream.BroadcastData{
-		Name: "cur",
+	m.SendBroadcast(BroadcastData{
+		Name:    "cur",
 		Content: state.NowPlaying.Abbreviate(*song),
 	})
 }

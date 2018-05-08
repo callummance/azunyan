@@ -63,7 +63,7 @@ func GetSongByID(env databaseConfig, sid bson.ObjectId) (*models.Song, error) {
 }
 
 func getCollection(env databaseConfig) *mgo.Collection {
-	return env.GetSession().DB(env.GetDbConfig().DatabaseName).C("song")
+	return env.GetSession().DB(env.GetConfig().DbConfig.DatabaseName).C("song")
 }
 
 func checkSongExists(env databaseConfig, song models.Song) bool {

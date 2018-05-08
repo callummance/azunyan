@@ -1,14 +1,14 @@
 package middlewares
 
 import (
-	"github.com/callummance/azunyan/state"
+	"github.com/callummance/azunyan/manager"
 	"github.com/gin-gonic/gin"
 )
 
-func AttachEnvironment(env state.Env, c *gin.Context) {
-	newEnv := env.UpdateSession()
-	defer newEnv.CloseSession()
+func AttachEnvironment(manager *manager.KaraokeManager, c *gin.Context) {
+	newMan := manager.UpdateSession()
+	defer newMan.CloseSession()
 
-	c.Set("env", newEnv)
+	c.Set("manager", newMan)
 	c.Next()
 }

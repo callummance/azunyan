@@ -88,5 +88,5 @@ func UpdateReqPrio(env databaseConfig, reqId bson.ObjectId, newPrio float64) err
 }
 
 func getReqCollection(env databaseConfig) *mgo.Collection {
-	return env.GetSession().DB(env.GetDbConfig().DatabaseName).C("request")
+	return env.GetSession().DB(env.GetConfig().DbConfig.DatabaseName).C("request")
 }

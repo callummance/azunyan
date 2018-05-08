@@ -1,14 +1,14 @@
 package db
 
 import (
-	"gopkg.in/mgo.v2"
 	"log"
+
 	"github.com/callummance/azunyan/config"
+	"gopkg.in/mgo.v2"
 )
 
 type databaseConfig interface {
 	GetSession() *mgo.Session
-	GetDbConfig() config.DbConfig
 	GetConfig() config.Config
 	GetLog() *log.Logger
 }

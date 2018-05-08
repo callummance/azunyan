@@ -1,23 +1,23 @@
 package webserver
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/callummance/azunyan/state"
-	"github.com/callummance/azunyan/db"
 	"fmt"
-	"github.com/callummance/azunyan/webserver/stream"
+
+	"github.com/callummance/azunyan/db"
 	"github.com/callummance/azunyan/manager"
+	"github.com/callummance/azunyan/webserver/stream"
+	"github.com/gin-gonic/gin"
 )
 
-func RouteApi (group *gin.RouterGroup) {
+func RouteApi(group *gin.RouterGroup) {
 	group.GET("/getsongslist", songListEndpoint)
 	group.GET("/nosingers", noSingersEndpoint)
 	group.GET("/queuestream", stream.GetSub)
 	group.POST("/addrequest", makeRequestEndpoint)
 }
 
-func songListEndpoint (c *gin.Context) {
-	env, ok := c.MustGet("env").(*state.Env)
+func songListEndpoint(c *gin.Context) {
+	env, ok := c.MustGet("manager").(*manager.KaraokeManager)
 	if !ok {
 		env.Logger.Printf("Failed to grab environment from Context variable")
 		c.String(500, "{\"message\": \"internal failure\"")
@@ -25,8 +25,8 @@ func songListEndpoint (c *gin.Context) {
 	c.JSON(200, db.GetSongs(env))
 }
 
-func noSingersEndpoint (c *gin.Context) {
-	env, ok := c.MustGet("env").(*state.Env)
+func noSingersEndpoint(c *gin.Context) {
+	env, ok := c.MustGet("manager").(*manager.KaraokeManager)
 	if !ok {
 		env.Logger.Printf("Failed to grab environment from Context variable")
 		c.String(500, "{\"message\": \"internal failure\"")
@@ -38,8 +38,8 @@ func noSingersEndpoint (c *gin.Context) {
 	c.String(200, fmt.Sprintf("%d", state.NoSingers))
 }
 
-func makeRequestEndpoint (c *gin.Context) {
-	env, ok := c.MustGet("env").(*state.Env)
+func makeRequestEndpoint(c *gin.Context) {
+	env, ok := c.MustGet("manager").(*manager.KaraokeManager)
 	if !ok {
 		env.Logger.Printf("Failed to grab environment from Context variable")
 		c.String(500, "{\"message\": \"internal failure\"")
