@@ -13,3 +13,6 @@
 
 #Bower modules
 bower_components
+
+#idea settings
+.idea
