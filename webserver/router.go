@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//Route sets up and returns a router for the webserver
 func Route(man manager.KaraokeManager) *gin.Engine {
 	router := gin.Default()
 

@@ -19,7 +19,6 @@ func main() {
 	env := manager.Initialize(configLoc)
 	(&env).UpdateSession()
 
-	db.ImportJSONSongList(&env, "songs.json")
 	db.InitialiseState(&env)
 
 	testReq := models.Request{ReqId: bson.NewObjectId(),

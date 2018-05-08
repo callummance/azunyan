@@ -13,6 +13,7 @@ func RouteApi(group *gin.RouterGroup) {
 	group.GET("/getsongslist", songListEndpoint)
 	group.GET("/nosingers", noSingersEndpoint)
 	group.GET("/queuestream", stream.GetSub)
+	group.GET("/searchsongs", searchSongsEndpoint)
 	group.POST("/addrequest", makeRequestEndpoint)
 }
 
@@ -56,4 +57,15 @@ func makeRequestEndpoint(c *gin.Context) {
 	} else {
 		c.AbortWithError(403, fmt.Errorf("Requests are not open yet!"))
 	}
+}
+
+func searchSongsEndpoint(c *gin.Context) {
+	m, ok := c.MustGet("manager").(*manager.KaraokeManager)
+	if !ok {
+		m.Logger.Printf("Failed to grab environment from Context variable")
+		c.String(500, "{\"message\": \"internal failure\"")
+	}
+
+	searchString := c.Request.URL.Query().Get("q")
+	c.JSON(200, m.GetSearchResults(searchString))
 }

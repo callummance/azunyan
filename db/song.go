@@ -42,7 +42,28 @@ func ImportJSONSongList(env databaseConfig, fileLoc string) {
 
 func GetSongs(env databaseConfig) []models.Song {
 	var songs []models.Song
-	err := getCollection(env).Find(bson.M{}).All(&songs)
+	err := getCollection(env).Find(bson.M{}).Select(bson.M{
+		"creator":  1,
+		"title":    1,
+		"artist":   1,
+		"source":   1,
+		"language": 1,
+		"bpm":      1,
+		"is_duet":  1,
+		"genre":    1,
+		"year":     1}).All(&songs)
+	if err != nil {
+		env.GetLog().Printf("Could not fetch songlist due to error %q", err)
+	}
+	return songs
+}
+
+func GetSongTAS(env databaseConfig) []models.SongSearchData {
+	var songs []models.SongSearchData
+	err := getCollection(env).Find(bson.M{}).Select(bson.M{
+		"title":  1,
+		"artist": 1,
+		"source": 1}).All(&songs)
 	if err != nil {
 		env.GetLog().Printf("Could not fetch songlist due to error %q", err)
 	}
@@ -51,7 +72,15 @@ func GetSongs(env databaseConfig) []models.Song {
 
 func GetSongByID(env databaseConfig, sid bson.ObjectId) (*models.Song, error) {
 	var res models.Song
-	err := getCollection(env).FindId(sid).One(&res)
+	err := getCollection(env).FindId(sid).Select(bson.M{
+		"creator":  1,
+		"title":    1,
+		"artist":   1,
+		"language": 1,
+		"bpm":      1,
+		"is_duet":  1,
+		"genre":    1,
+		"year":     1}).One(&res)
 	if err != nil && err.Error() == "not found" {
 		return nil, nil
 	} else if err != nil {
@@ -59,6 +88,23 @@ func GetSongByID(env databaseConfig, sid bson.ObjectId) (*models.Song, error) {
 		return nil, fmt.Errorf("database failure occurred: %q", err)
 	} else {
 		return &res, nil
+	}
+}
+
+func GetSongCoverByID(env databaseConfig, sid bson.ObjectId) ([]byte, error) {
+	var res struct {
+		Cover bson.Binary `bson:"cover"`
+	}
+	err := getCollection(env).FindId(sid).Select(bson.M{
+		"_id":   0,
+		"cover": 1}).One(&res)
+	if err != nil && err.Error() == "not found" {
+		return nil, nil
+	} else if err != nil {
+		env.GetLog().Printf("Failed to check database for song id %q due to reason '%s'", sid, err)
+		return nil, fmt.Errorf("database failure occurred: %q", err)
+	} else {
+		return res.Cover.Data, nil
 	}
 }
 

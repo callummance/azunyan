@@ -6,6 +6,7 @@ import (
 
 	"github.com/callummance/azunyan/config"
 	"github.com/callummance/azunyan/db"
+	"github.com/callummance/fuwafuwasearch/levenshteinmatrix"
 	broadcast "github.com/dustin/go-broadcast"
 	mgo "gopkg.in/mgo.v2"
 )
@@ -15,20 +16,45 @@ type KaraokeManager struct {
 	Logger            *log.Logger
 	Config            config.Config
 	UpdateSubscribers broadcast.Broadcaster
+	TitleSearch       *levenshteinmatrix.LMatrixSearch
+	ArtistSearch      *levenshteinmatrix.LMatrixSearch
+	SourceSearch      *levenshteinmatrix.LMatrixSearch
 }
 
 func Initialize(configLoc string) KaraokeManager {
-	logger := log.New(os.Stderr, "AZUNYAN: ", log.Lshortfile|log.Ldate|log.Ltime)
-	conf := config.LoadConfig(configLoc, logger)
-	session := db.InitDB(conf, logger)
-	subscriberBc := broadcast.NewBroadcaster(broadcastBufLen)
+	var newManager KaraokeManager
+	newManager.Logger = log.New(os.Stderr, "AZUNYAN: ", log.Lshortfile|log.Ldate|log.Ltime)
+	newManager.Config = config.LoadConfig(configLoc, newManager.Logger)
+	newManager.DbSession = db.InitDB(newManager.Config, newManager.Logger)
+	newManager.UpdateSubscribers = broadcast.NewBroadcaster(broadcastBufLen)
+	songSearchData := db.GetSongTAS(&newManager)
+	var ids []interface{}
+	titles := []string{}
+	artists := []string{}
+	sources := []string{}
+	for _, song := range songSearchData {
+		ids = append(ids, song.ID)
+		titles = append(titles, song.Title)
+		artists = append(artists, song.Artist)
+		sources = append(sources, song.Source)
+	}
+	newManager.TitleSearch = levenshteinmatrix.NewLMatrixSearch(titles, ids, false)
+	newManager.ArtistSearch = levenshteinmatrix.NewLMatrixSearch(artists, ids, false)
+	newManager.SourceSearch = levenshteinmatrix.NewLMatrixSearch(sources, ids, false)
 
-	return KaraokeManager{DbSession: session, Logger: logger, Config: conf, UpdateSubscribers: subscriberBc}
+	return newManager
 }
 
 func (m *KaraokeManager) UpdateSession() *KaraokeManager {
 	newSession := db.GetNewSession(m)
-	return &KaraokeManager{DbSession: newSession, Logger: m.Logger, Config: m.Config, UpdateSubscribers: m.UpdateSubscribers}
+	return &KaraokeManager{
+		DbSession:         newSession,
+		Logger:            m.Logger,
+		Config:            m.Config,
+		UpdateSubscribers: m.UpdateSubscribers,
+		TitleSearch:       m.TitleSearch,
+		ArtistSearch:      m.ArtistSearch,
+		SourceSearch:      m.SourceSearch}
 }
 
 func (m *KaraokeManager) CloseSession() {

@@ -17,3 +17,12 @@ type Song struct {
 	Source   string        `json:"source" bson:"source"`
 	Year     int           `json:"year" bson:"year"`
 }
+
+//SongSearchData contains just the Title, Artist, Source and ID of each track,
+//and is intended to only be used when searching the database
+type SongSearchData struct {
+	ID     bson.ObjectId `json:"id" bson:"_id"`
+	Title  string        `json:"title" bson:"title"`
+	Artist string        `json:"artist" bson:"artist"`
+	Source string        `json:"source" bson:"source"`
+}

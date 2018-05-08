@@ -6,6 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//ForwardRoot handles the root site, and forwards to either the song listing or
+//the requests page depending on whether requrests have been enabled.
 func ForwardRoot(c *gin.Context) {
 	env, ok := c.MustGet("manager").(*manager.KaraokeManager)
 	if !ok {
@@ -14,7 +16,7 @@ func ForwardRoot(c *gin.Context) {
 	}
 	state, err := db.GetEngineState(env, env.Config.KaraokeConfig.SessionName)
 	if err != nil {
-		env.Logger.Printf("Failed to get singer count due to error %q", err)
+		env.Logger.Printf("Failed to get manager state due to error %q", err)
 	}
 	if state.RequestsActive {
 		c.Redirect(302, "/static/request/index.html")
