@@ -1,19 +1,21 @@
 package config
 
 import (
-	"github.com/BurntSushi/toml"
 	"log"
+
+	"github.com/BurntSushi/toml"
 )
 
 type WebConfig struct {
-	Port	int	`toml:"serverport"`
+	Port int `toml:"serverport"`
 }
 
 type KaraokeConfig struct {
-	SessionName		string 	`toml:"sessionname"`
-	NoSingers		int 	`toml:"nosingers"`
-	TimeMultiplier	int		`toml:"timemultiplier"`
-	WaitMultiplier	int		`toml:"waitmultiplier"`
+	SessionName       string `toml:"sessionname"`
+	NoSingers         int    `toml:"nosingers"`
+	TimeMultiplier    int    `toml:"timemultiplier"`
+	WaitMultiplier    int    `toml:"waitmultiplier"`
+	DefaultAlbumCover string `toml:"defaultcoverimage"`
 }
 
 type DbConfig struct {
@@ -22,9 +24,9 @@ type DbConfig struct {
 }
 
 type Config struct {
-	DbConfig		DbConfig 			`toml:"dbconfig"`
-	WebConfig		WebConfig 			`toml:"webconfig"`
-	KaraokeConfig	KaraokeConfig		`toml:"karaokeconfig"`
+	DbConfig      DbConfig      `toml:"dbconfig"`
+	WebConfig     WebConfig     `toml:"webconfig"`
+	KaraokeConfig KaraokeConfig `toml:"karaokeconfig"`
 }
 
 func LoadConfig(loc string, logger *log.Logger) Config {

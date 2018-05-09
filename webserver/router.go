@@ -30,7 +30,8 @@ func Route(man manager.KaraokeManager) *gin.Engine {
 	RouteApi(apig)
 
 	//Image Group
-	//imgg := router.Group("/i")
+	imgg := router.Group("/i")
+	RouteMedia(imgg)
 
 	//Admin group
 	adming := router.Group("/admin", gin.BasicAuth(gin.Accounts{

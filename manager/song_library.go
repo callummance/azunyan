@@ -1,12 +1,40 @@
 package manager
 
 import (
+	"io/ioutil"
+	"sort"
 	"strings"
 
 	"github.com/callummance/azunyan/db"
 	"github.com/callummance/azunyan/models"
 	"gopkg.in/mgo.v2/bson"
 )
+
+//GetSongCoverImage returns a bytestring containing the cover image for the
+//given song id
+func GetSongCoverImage(id string, m *KaraokeManager) []byte {
+	sid := bson.ObjectIdHex(id)
+	bs, err := db.GetSongCoverByID(m, sid)
+	if err != nil {
+		m.Logger.Printf("Failed to get cover image for song id %q: %v", id, err)
+	}
+	if bs == nil {
+		path := m.Config.KaraokeConfig.DefaultAlbumCover
+		res, err := ioutil.ReadFile(path)
+		if err != nil {
+			m.Logger.Fatalf("Failed to get default cover image for song id %q: %v", id, err)
+		}
+		return res
+	}
+	return bs
+}
+
+//SearchResults implemeents sort.Interface for []bson.Objectid
+type SearchResults []bson.ObjectId
+
+func (r SearchResults) Len() int           { return len(r) }
+func (r SearchResults) Swap(i, j int)      { r[i], r[j] = r[j], r[i] }
+func (r SearchResults) Less(i, j int) bool { return r[i] < r[j] }
 
 //GetSearchResults retrieves a list of songs matching the given search
 func (m *KaraokeManager) GetSearchResults(searchTerm string) []*models.Song {
@@ -53,11 +81,11 @@ func (m *KaraokeManager) SearchSongLibrary(searchTerm string) []bson.ObjectId {
 
 	var res []bson.ObjectId
 	for i := len(itemsToSearch); i > 0; i-- {
+		sort.Sort(SearchResults(exactMatches[i]))
 		res = append(res, exactMatches[i]...)
 	}
-	for i := len(itemsToSearch); i > 0; i-- {
-		res = append(res, matches[i]...)
-	}
+	sort.Sort(SearchResults(matches[len(itemsToSearch)]))
+	res = append(res, matches[len(itemsToSearch)]...)
 	return res
 }
 
