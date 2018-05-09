@@ -55,17 +55,20 @@ func (m *KaraokeManager) GetSearchResults(searchTerm string) []*models.Song {
 //the given search term, with results matching the most words at the start.
 func (m *KaraokeManager) SearchSongLibrary(searchTerm string) []bson.ObjectId {
 	itemsToSearch := strings.Split(searchTerm, " ")
+	m.Logger.Printf("Now searching for %v", itemsToSearch)
 	matchCount := make(map[bson.ObjectId]int)
 	exactMatchCount := make(map[bson.ObjectId]int)
 	for _, word := range itemsToSearch {
-		matches := m.TitleSearch.GetMatchingKeys(word, 1)
-		matches = mergeMatchSets(matches, m.ArtistSearch.GetMatchingKeys(word, 1))
-		matches = mergeMatchSets(matches, m.SourceSearch.GetMatchingKeys(word, 1))
-		for match, distance := range matches {
-			if distance == 0 {
-				exactMatchCount[match.(bson.ObjectId)]++
-			} else {
-				matchCount[match.(bson.ObjectId)]++
+		if word != "" {
+			matches := m.TitleSearch.GetMatchingKeys(word, 1)
+			matches = mergeMatchSets(matches, m.ArtistSearch.GetMatchingKeys(word, 1))
+			matches = mergeMatchSets(matches, m.SourceSearch.GetMatchingKeys(word, 1))
+			for match, distance := range matches {
+				if distance == 0 {
+					exactMatchCount[match.(bson.ObjectId)]++
+				} else {
+					matchCount[match.(bson.ObjectId)]++
+				}
 			}
 		}
 	}
