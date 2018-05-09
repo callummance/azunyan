@@ -1,0 +1,176 @@
+body {
+  margin: 0;
+}
+
+.bodywrapper {
+  width:100%;
+  height:100%;
+  position:absolute;
+  margin: 0;
+  background:url(../images/azunyan.jpg) no-repeat left bottom;
+  background-size: cover;
+  height:100%;
+  background-color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  margin:auto;
+  flex-grow: 0;
+  width: 100%;
+}
+
+.headerimage {
+  width: 100%;
+  max-width: 500px;
+  height:auto;
+  margin-left:auto;
+  margin-right:auto;
+  padding-bottom: 1rem;
+  display: block;
+}
+
+.contentwrapper {
+  width: 90%;
+  margin-left:auto;
+  margin-right:auto;
+  background-color:rgba(255,255,255,0.5);
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-between;
+  height: auto;
+  flex-grow: 1;
+  margin-bottom: 1rem;
+  overflow: scroll;
+}
+
+.contentwrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.resultcard {
+  flex-grow: 0;
+  flex-shrink: 1;
+  flex-basis: auto;
+  background-color:rgba(245,245,245,1);
+  border-radius: 3px;
+  height: 10rem;
+  width: 30rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: .4rem;
+  margin-bottom: .4rem;
+  position:relative;
+}
+
+.albumimage {
+  height: 10rem;
+  width: 10rem;
+  border-radius: 3px 0px 0px 3px;
+}
+
+.cardlang {
+  height: 3rem;
+  width: 4rem;
+  left: 6rem;
+  bottom: 0;
+  position: absolute;
+}
+
+.cardinfo {
+  display: flex;
+  flex-direction: column;
+  line-height: 2rem;
+  height: 10rem;
+  left: 10rem;
+  position: absolute;
+  width: 20rem;
+  bottom: 0;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.cardtitle {
+  margin-top: .5rem;
+  height: 5rem;
+  margin-right: .2rem;
+  margin-left: .2rem;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 2rem;
+}
+
+.cardartist {
+  height: 3rem;
+  line-height: 1.1em;
+  margin-right: .2rem;
+  margin-left: .2rem;
+  font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: grey;
+}
+
+.modal {
+  font-family: 'Open Sans', sans-serif;
+}
+
+.modaltextdiv {
+  font-weight: bold;
+  font-size: 1.4em;
+  margin-top: 2em;
+  text-align: center
+}
+
+.modalnamebox {
+  width: 90%;
+  font-size: 1.2em;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  margin-top: .4em;
+}
+
+.pulse {
+  box-shadow: 0 25px 5px rgba(44,170,226, 0.4);
+  animation: pulse 5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    -moz-box-shadow: 0 0 25px 5px rgba(44,170,226, 0.2);
+    box-shadow: 0 0 25px 5px rgba(44,170,226, 0.2);
+  }
+  50% {
+      -moz-box-shadow: 0 0 25px 5px rgba(44,170,226, 0.5);
+      box-shadow: 0 0 25px 5px rgba(44,170,226, 0.5);
+  }
+  100% {
+    -moz-box-shadow: 0 0 25px 5px rgba(44,170,226, 0.2);
+    box-shadow: 0 0 25px 5px rgba(44,170,226, 0.2);
+  }
+}
+
+#songSelect {
+    font-size: 2.5vmax;
+    border-radius: 5px;
+    border: 1px solid #cccccc;
+    width: 70%;
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    margin-bottom: 25px;
+    padding: 5px;
+    box-shadow: 0 0 7px 5px rgba(0,0,0,0.15);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+#songSelect:hover {
+  box-shadow: 0 0 7px 5px rgba(0,0,0,0.25);
+}
