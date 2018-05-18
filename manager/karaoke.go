@@ -8,24 +8,26 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-func AddRequest(m *KaraokeManager, singers []string, song string) {
+//AddRequest takes a singer and the song id as a string and adds it to the
+//request queue, also updating any listeners.
+func AddRequest(m *KaraokeManager, singer string, song string) error {
 	req := models.Request{
-		ReqId:       bson.NewObjectId(),
+		ReqID:       bson.NewObjectId(),
 		ReqTime:     time.Now(),
-		Singers:     singers,
+		Singer:      singer,
 		Song:        bson.ObjectIdHex(song),
 		PriorityMod: 0,
-		Priority:    0,
 		PlayedTime:  nil,
 	}
 	err := db.InsertRequest(m, req)
 	if err != nil {
 		m.Logger.Printf("Could not insert request for song %s due to error %s", song, err)
 	}
-	UpdatePriorities(m)
-	UpdateListenersQueue(m)
+	err = FetchAndUpdateListenersQueue(m)
+	return err
 }
 
+//SetActive sets the karaoke system active and supdates all listeners
 func SetActive(m *KaraokeManager, newActiveState bool) error {
 	newstate, err := db.GetEngineState(m, m.GetConfig().KaraokeConfig.SessionName)
 	if err != nil {
@@ -45,6 +47,24 @@ func SetActive(m *KaraokeManager, newActiveState bool) error {
 	}
 }
 
+//SetDupesAllowed modifies the internal flag allowing requests for duplicate
+//songs.
+func SetDupesAllowed(m *KaraokeManager, newDupePermissions bool) error {
+	newstate, err := db.GetEngineState(m, m.GetConfig().KaraokeConfig.SessionName)
+	if err != nil {
+		m.Logger.Printf("Failed to get session data due to error %q", err)
+	}
+	newstate.AllowingDupes = newDupePermissions
+	err = db.UpdateEngineState(m, *newstate)
+	if err != nil {
+		m.Logger.Printf("Failed to set duplicate request permissions due to error %q", err)
+		return err
+	} else {
+		return nil
+	}
+}
+
+//SetReqActive updates the internal flag allowing users to make requests.
 func SetReqActive(m *KaraokeManager, newActiveState bool) error {
 	state, err := db.GetEngineState(m, m.Config.KaraokeConfig.SessionName)
 	if err != nil {
@@ -58,41 +78,4 @@ func SetReqActive(m *KaraokeManager, newActiveState bool) error {
 	} else {
 		return nil
 	}
-}
-
-func UpdateListenersQueue(m *KaraokeManager) {
-	queued := db.GetQueued(m)
-	var abbQueue []models.AbbreviatedQueueItem
-
-	for _, item := range queued {
-		song, err := db.GetSongByID(m, item.Song)
-		if err != nil {
-			m.Logger.Printf("Error whilst retrieving queued songs list: %q", err)
-			continue
-		}
-		abbQueue = append(abbQueue, item.Abbreviate(*song))
-	}
-
-	//Send updates
-	m.SendBroadcast(BroadcastData{
-		Name:    "queue",
-		Content: abbQueue,
-	})
-}
-
-func UpdateListenersCur(m *KaraokeManager) {
-	state, err := db.GetEngineState(m, m.Config.KaraokeConfig.SessionName)
-	if err != nil {
-		m.Logger.Printf("Failed to get session data due to error %q", err)
-	}
-	song, err := db.GetSongByID(m, state.NowPlaying.Song)
-	if err != nil {
-		m.Logger.Printf("Error whilst retrieving queued songs list: %q", err)
-	}
-
-	//Send updates
-	m.SendBroadcast(BroadcastData{
-		Name:    "cur",
-		Content: state.NowPlaying.Abbreviate(*song),
-	})
 }

@@ -35,16 +35,9 @@ func GetSub(c *gin.Context) {
 }
 
 func sendInitial(m *manager.KaraokeManager, listener chan interface{}) {
-	queued := db.GetQueued(m)
-	var abbQueue []models.AbbreviatedQueueItem
-
-	for _, item := range queued {
-		song, err := db.GetSongByID(m, item.Song)
-		if err != nil {
-			m.Logger.Printf("Error whilst retrieving queued songs list: %q", err)
-			continue
-		}
-		abbQueue = append(abbQueue, item.Abbreviate(*song))
+	completeQueue, partialQueue, err := manager.GetQueue(m)
+	if err != nil {
+		m.Logger.Printf("Failed to get song queue state due to error %v", err)
 	}
 
 	state, err := db.GetEngineState(m, m.Config.KaraokeConfig.SessionName)
@@ -53,21 +46,20 @@ func sendInitial(m *manager.KaraokeManager, listener chan interface{}) {
 	}
 
 	listener <- manager.BroadcastData{
-		Name:    "queue",
-		Content: abbQueue,
+		Name: "queue",
+		Content: map[string][]models.QueueItem{
+			"complete": completeQueue,
+			"partial":  partialQueue,
+		},
 	}
 	listener <- manager.BroadcastData{
 		Name:    "active",
 		Content: state.IsActive,
 	}
 	if state != nil && state.NowPlaying != nil {
-		song, err := db.GetSongByID(m, state.NowPlaying.Song)
-		if err != nil {
-			m.Logger.Printf("Error whilst retrieving queued songs list: %q", err)
-		}
 		listener <- manager.BroadcastData{
 			Name:    "cur",
-			Content: state.NowPlaying.Abbreviate(*song),
+			Content: state.NowPlaying,
 		}
 	}
 }

@@ -7,6 +7,12 @@ jQuery(document).ready(function($){
 
   var searchTimeoutReady = true;
 
+  if (!String.prototype.trim) {
+    String.prototype.trim = function () {
+      return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+    };
+  }
+
   (function() {
     searchBox.on("keydown", function() {
       requestSearch(searchBox.val())
@@ -112,12 +118,24 @@ jQuery(document).ready(function($){
     modal.setContent(card.append(content).html());
     modal.addFooterBtn("Let's Go!", "tingle-btn tingle-btn--primary tingle-btn--pull-right", function() {
       name = $("#nameinput").val();
-      alert(name + " has requested " + id);
+      if (name.trim() == "") {
+        alert("Please enter a name.\n\nThis version of the karaoke queue uses names to match singers up, as well as to prevent the queue being clogged with requests from people that have left.\nThank you for your understanding.");
+      } else {
+        submitSelection(name, id);
+      }
+      console.log(name + " has requested " + id);
     })
     modal.addFooterBtn("Go back", "tingle-btn tingle-btn--danger tingle-btn--pull-right", function() {
       modal.close();
     });
     modal.open();
+  }
+
+  function submitSelection(sid, name) {
+    let requestObj = {
+      songid: sid,
+      singer: name
+    };
   }
 
   function getFlagName(lang) {

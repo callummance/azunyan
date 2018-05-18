@@ -65,6 +65,12 @@ body {
   margin-top: .4rem;
   margin-bottom: .4rem;
   position:relative;
+  transition: box-shadow 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.resultcard:hover {
+  box-shadow: 0 0 10px 5px rgba(44,170,226,0.25);
 }
 
 .albumimage {
