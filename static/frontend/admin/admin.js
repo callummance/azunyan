@@ -27,7 +27,7 @@ function AdminPanel() {
 
     //Functions for updating display elements
     this.setPlaying = function() {
-        $('#nowPlaying').text(admin.nowPlaying.songtitle + " - " + admin.nowPlaying.songartist);
+        $('#nowPlaying').text(admin.nowPlaying.title + " - " + admin.nowPlaying.artist);
     };
 
     //Setup the modal
