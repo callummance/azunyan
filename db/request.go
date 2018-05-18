@@ -61,7 +61,7 @@ func GetLiveRequestsForSong(env databaseConfig, sid bson.ObjectId) ([]models.Req
 }
 
 type songRequests struct {
-	ID       bson.ObjectId    `bson:"_ID"`
+	ID       bson.ObjectId    `bson:"_id"`
 	Requests []models.Request `bson:"requests"`
 }
 

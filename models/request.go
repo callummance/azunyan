@@ -40,7 +40,7 @@ func CompileQueueItems(reqs []Request, song *Song, maxSingers int) ([]QueueItem,
 	fullQueueItemsCount := noRequests / maxSingers
 	completeRes := make([]QueueItem, fullQueueItemsCount)
 
-	for i := 0; i <= fullQueueItemsCount; i++ {
+	for i := 0; i < fullQueueItemsCount; i++ {
 		item := QueueItem{
 			SongID:       song.ID,
 			SongTitle:    song.Title,
@@ -55,7 +55,7 @@ func CompileQueueItems(reqs []Request, song *Song, maxSingers int) ([]QueueItem,
 			item.Singers = append(item.Singers, reqs[offset].Singer)
 			item.RequestTimes = append(item.RequestTimes, reqs[offset].ReqTime)
 		}
-		completeRes = append(completeRes, item)
+		completeRes[i] = item
 	}
 
 	if incompleteQueueLen != 0 {

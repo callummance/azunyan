@@ -121,7 +121,7 @@ jQuery(document).ready(function($){
       if (name.trim() == "") {
         alert("Please enter a name.\n\nThis version of the karaoke queue uses names to match singers up, as well as to prevent the queue being clogged with requests from people that have left.\nThank you for your understanding.");
       } else {
-        submitSelection(name, id);
+        submitSelection(id, name);
       }
       console.log(name + " has requested " + id);
     })
@@ -136,6 +136,18 @@ jQuery(document).ready(function($){
       songid: sid,
       singer: name
     };
+    $.ajax({
+      url: "/api/addrequest",
+      type: "POST",
+      data: JSON.stringify(requestObj),
+      contentType: "application/json; charset=utf-8",
+    })
+    .done(function(data, textStatus) {
+      alert("Request Submitted!")
+    })
+    .fail(function(data, textStatus, errorThrown) {
+      alert("Something went wrong: " + errorThrown)
+    })
   }
 
   function getFlagName(lang) {

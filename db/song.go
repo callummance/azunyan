@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"runtime/debug"
 
 	"github.com/callummance/azunyan/models"
 	"gopkg.in/mgo.v2"
@@ -84,6 +85,8 @@ func GetSongByID(env databaseConfig, sid bson.ObjectId) (*models.Song, error) {
 	if err != nil && err.Error() == "not found" {
 		return nil, nil
 	} else if err != nil {
+		debug.PrintStack()
+		fmt.Print("\n\n\n")
 		env.GetLog().Printf("Failed to check database for song id %q due to reason '%s'", sid, err)
 		return nil, fmt.Errorf("database failure occurred: %q", err)
 	} else {

@@ -53,7 +53,7 @@ func makeRequestEndpoint(c *gin.Context) {
 	if state.RequestsActive {
 		var reqData struct {
 			SongID string `json:"songid"`
-			Singer string `json:"name"`
+			Singer string `json:"singer"`
 		}
 		err := c.BindJSON(&reqData)
 		if err != nil {
@@ -99,5 +99,5 @@ func searchSongsEndpoint(c *gin.Context) {
 	}
 
 	searchString := c.Request.URL.Query().Get("q")
-	c.JSON(200, m.GetSearchResults(searchString))
+	c.JSON(201, m.GetSearchResults(searchString))
 }
