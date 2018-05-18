@@ -19,14 +19,14 @@ body {
     position: absolute;
     top:0;
     left:0;
-    width: 380px;
+    width: 500px;
     padding: 0 10px;
     height: 100%;
 }
 
 #leftbar img {
     bottom: 10px;
-    width: 380px;
+    width: 500px;
     position:absolute;
 }
 
@@ -37,16 +37,16 @@ body {
 #mainbody{
     position: absolute;
     top:0;
-    left:400px;
+    left:520px;
     right: 0;
     height: 100%;
     margin: 0;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     background: deepskyblue; /* For browsers that do not support gradients */
-    background: -webkit-linear-gradient(left, deepskyblue, white); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(left, deepskyblue, white); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(left, deepskyblue, white); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(left, deepskyblue, white); /* Standard syntax */
+    background: -webkit-linear-gradient(top, deepskyblue, white); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(top, deepskyblue, white); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(top, deepskyblue, white); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(top, deepskyblue, white); /* Standard syntax */
 }
 
 #nowplaying{
@@ -59,8 +59,16 @@ body {
     right:0;
     text-align: center;
     color: white;
-    height: 200px;
+    height: 750px;
     background: #2b2b2b;
+}
+
+#nowplaying img {
+  border-radius: 10px 10px 0 0;
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 
 #nowplaying h1 {
@@ -137,38 +145,16 @@ body {
     position: relative;
 }
 .marquee h1 {
-    margin-top: 20px;
+    margin-top: 50px;
     margin-bottom: 5px;
     line-height: 50px;
     text-align: center;
-    /* Starting position */
-    -moz-transform:translateX(100%);
-    -webkit-transform:translateX(100%);
-    transform:translateX(100%);
-    /* Apply animation to this element */
-    -moz-animation: example1 15s linear infinite;
-    -webkit-animation: example1 15s linear infinite;
-    animation: example1 15s linear infinite;
+    animation: marquee 15s ease-in-out infinite;
     white-space: nowrap;
 }
-/* Move it (define the animation) */
-@-moz-keyframes example1 {
-    0%   { -moz-transform: translateX(100%); }
-    100% { -moz-transform: translateX(-100%); }
-}
-@-webkit-keyframes example1 {
-    0%   { -webkit-transform: translateX(100%); }
-    100% { -webkit-transform: translateX(-100%); }
-}
-@keyframes example1 {
-    0%   {
-        -moz-transform: translateX(100%); /* Firefox bug fix */
-        -webkit-transform: translateX(100%); /* Firefox bug fix */
-        transform: translateX(100%);
-    }
-    100% {
-        -moz-transform: translateX(-100%); /* Firefox bug fix */
-        -webkit-transform: translateX(-100%); /* Firefox bug fix */
-        transform: translateX(-100%);
-    }
+
+@keyframes marquee {
+    0%      {transform: translate(10%, 0);}
+    50%     {transform: translate(-110%, 0);}
+    100%    {transform: translate(10%, 0);}
 }

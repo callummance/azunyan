@@ -61,13 +61,16 @@ function setActive(newState) {
 }
 
 function setNowPlaying(nowPlaying) {
-    let title = nowPlaying.songtitle;
-    let artist = nowPlaying.songartist;
+    let title = nowPlaying.title;
+    let artist = nowPlaying.artist;
     let singers = nowPlaying.singers.join(", ");
+    let sid = nowPlaying.sid;
+    let coverImg = "/i/cover/" + sid
 
     $('#title').text(title);
     $('#artist').text(artist);
     $('#singers').text(singers);
+    $('#cover').attr("src", coverImg);
 }
 
 
