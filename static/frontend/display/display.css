@@ -87,15 +87,35 @@ body {
 }
 
 #queue{
-    position: absolute;
-    top:200px;
-    left:0;
+    position: relative;
+    top:0;
+    left:50px;
     right:0;
-    bottom:0;
+    height: 60%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 10px;
+    overflow: scroll;
+}
+
+#queue::-webkit-scrollbar {
+    display: none;
+}
+
+#waiting{
+  left: 50px;
+  right: 0px;
+  overflow: scroll;
+  position: relative;
+  height: 40%;
+  margin: 10px;
+  border-radius: 10px;
+  background-color: lightgrey;
+}
+
+#waiting::-webkit-scrollbar {
+    display: none;
 }
 
 #overlay img{

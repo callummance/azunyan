@@ -1,6 +1,7 @@
 package manager
 
 import (
+	"reflect"
 	"sort"
 	"time"
 
@@ -102,9 +103,19 @@ func PopNextSong(m *KaraokeManager) (*models.QueueItem, error) {
 	}
 	origState.NowPlaying = next
 	db.UpdateEngineState(m, origState)
-	UpdateListenersQueue(m, completeQueue, partialQueue)
+	UpdateListenersQueue(m, removeNowPlayingFromList(next, completeQueue), removeNowPlayingFromList(next, partialQueue))
 	UpdateListenersCur(m, next)
 	return next, nil
+}
+
+func removeNowPlayingFromList(np *models.QueueItem, list []models.QueueItem) []models.QueueItem {
+	updated := make([]models.QueueItem, 0)
+	for _, v := range list {
+		if !reflect.DeepEqual(np.RequestIDs, v.RequestIDs) {
+			updated = append(updated, v)
+		}
+	}
+	return updated
 }
 
 func markQueueItemPlayed(m *KaraokeManager, i *models.QueueItem) {

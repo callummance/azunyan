@@ -31,8 +31,9 @@ function DisplayClient() {
     this.cur = {};
     this.source = new window.EventSource('/api/queuestream');
     this.active = true;
+    this.queueHasScrolled = false;
 
-    let client = this;
+    var client = this;
 
     //Listen for SSEs
     this.source.addEventListener('queue',  function(e) {
@@ -50,6 +51,44 @@ function DisplayClient() {
     this.source.addEventListener('message', function(e) {
         client.message.text = JSON.parse(e.data).message;
     });
+
+    $("#queue").scroll(function() {
+      client.queueHasScrolled = true;
+    })
+    setTimeout(function() {
+      handleScrollQueue($("#queue"), client);
+    }, 5000);
+}
+
+function handleScrollQueue(targetDiv, client) {
+  let curScrollPosition = targetDiv.scrollTop();
+  let contentHeight = targetDiv[0].scrollHeight;
+  let divHeight = targetDiv.height();
+  let viewportBottom = curScrollPosition + divHeight;
+
+  if (client.queueHasScrolled) {
+    client.queueHasScrolled = false;
+    setTimeout(function() {
+      handleScrollQueue($("#queue"), client);
+    }, 2000);
+  } else if (viewportBottom >= contentHeight) {
+    //We are already at the bottom, scroll back up
+    targetDiv.animate({
+      scrollTop: 0
+    });
+    setTimeout(function() {
+      handleScrollQueue($("#queue"), client);
+    }, 10000);
+  } else {
+    //Scroll down to the next set of items
+    targetDiv.animate({
+      scrollTop: viewportBottom
+    });
+    setTimeout(function() {
+      handleScrollQueue($("#queue"), client);
+    }, 1000);
+  }
+
 }
 
 function setActive(newState) {
@@ -76,16 +115,17 @@ function setNowPlaying(nowPlaying) {
 
 function makeQueueDivs(queue, prevQueueDivs, nowPlaying) {
     let newQueueDisplay = {};
-    queue.map((q_entry, index) => {
+    queue.complete.map((q_entry, index) => {
         let newPos = index * 55;
-        itemid = q_entry.reqid;
+        itemid = q_entry.ids.join(".");
+        console.log(itemid);
         if (prevQueueDivs.hasOwnProperty(itemid)) {
             //Thingy is already in queue
             prevQueueDivs[itemid].animate({
                 top: newPos
             }, 1000);
-            if (nowPlaying.reqid != q_entry.reqid) {
-                newQueueDisplay[q_entry.reqid] = prevQueueDivs[itemid]
+            if (nowPlaying.ids != q_entry.ids) {
+                newQueueDisplay[q_entry.ids] = prevQueueDivs[itemid]
             }
         } else {
             //Make a new div
@@ -99,19 +139,19 @@ function makeQueueDivs(queue, prevQueueDivs, nowPlaying) {
                 $('<div>')
                     .addClass("itemtitle")
                     .append("h1")
-                    .text(q_entry.songtitle)
+                    .text(q_entry.title)
             );
             newdiv.append(
                 $('<div>')
                     .addClass("itemartist")
                     .append("h2")
-                    .text(q_entry.songartist)
+                    .text(q_entry.artist)
             );
             newdiv.append(
                 $('<div>')
                     .addClass("itemsingers")
                     .append("h3")
-                    .text(q_entry.singers)
+                    .text(q_entry.singers.join(", "))
             );
 
             //Sort out positioning
@@ -119,8 +159,8 @@ function makeQueueDivs(queue, prevQueueDivs, nowPlaying) {
             newdiv.animate({
                 top: newPos
             }, 1000);
-            if (nowPlaying.reqid != q_entry.reqid) {
-                newQueueDisplay[q_entry.reqid] = newdiv
+            if (nowPlaying.ids != q_entry.ids) {
+                newQueueDisplay[itemid] = newdiv
             }
         }
     });
