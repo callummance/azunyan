@@ -2,34 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="js/sweetalert-master/dist/sweetalert.css">
-    <link rel="stylesheet" type="text/css" href="js/awesomplete-gh-pages/awesomplete.css">
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" type="text/css" href="/static/bower_components/tingle/dist/tingle.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/bower_components/flag-icon-css/css/flag-icon.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 
-    <title>Mugi</title>
+    <title>Azunyan</title>
 </head>
 <body>
-
-<form id = "contact-form">
-    <img src="/static/images/logo.png">
-    <br><br>
-    <input id = "songSelect" class="large" placeholder="Search Songlist">
-    <input id = "songSelection" type="hidden" value="">
-    <input id = "songSelectionId" type="hidden" value="-1">
-    <input id = "noSingers" type="hidden" value="0">
-
-    <hr><br><br>
-
-    <div id = singers>
-        <h1>Singers</h1>
+  <div class="bodywrapper tingle-content-wrapper">
+    <div class="header">
+      <img src="/static/images/logo.png" class="headerimage">
+      <div class="searchbox">
+        <input id = "songSelect" class="large" placeholder="Search Songlist">
+      </div>
     </div>
-
-    <button id = "submit" type="button">Let's Go!</button>
-</form>
-
-
-<script src="js/sweetalert-master/dist/sweetalert.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<script src="js/bundle.js"></script>
+    <section id="resultsbox" class="contentwrapper">
+    </section>
+  </div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="/static/bower_components/tingle/dist/tingle.min.js"></script>
+<script src="request.js"></script>
 </body>
 </html>

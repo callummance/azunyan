@@ -1,167 +1,182 @@
-/* General Styles */
-html{
-    background:url(../images/azunyan.jpg) no-repeat left bottom;
-    background-size: cover;
-    height:100%;
-    background-color: #FFFFFF;
-}
-* {
-    box-sizing:border-box;
-    -webkit-box-sizing:border-box;
-    -moz-box-sizing:border-box;
-    -webkit-font-smoothing:antialiased;
-    -moz-font-smoothing:antialiased;
-    -o-font-smoothing:antialiased;
-    font-smoothing:antialiased;
-    text-rendering:optimizeLegibility;
-}
 body {
-    color: #C0C0C0;
-    font-family: Arial, san-serif;
+  margin: 0;
 }
 
+.bodywrapper {
+  width:100%;
+  height:100%;
+  position:absolute;
+  margin: 0;
+  background:url(../images/azunyan.jpg) no-repeat left bottom;
+  background-size: cover;
+  height:100%;
+  background-color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+}
 
-/* Contact Form Styles */
-h1 {
-    margin: 10px 0 0 0;
+.header {
+  margin:auto;
+  flex-grow: 0;
+  width: 100%;
 }
-h4{
-    margin: 0 0 20px 0;
+
+.headerimage {
+  width: 100%;
+  max-width: 500px;
+  height:auto;
+  margin-left:auto;
+  margin-right:auto;
+  padding-bottom: 1rem;
+  display: block;
 }
-#contact-form {
-    background-color:rgba(72,72,72,0.7);
-    padding: 10px 20px 30px 20px;
-    max-width:100%;
-    width: 50em;
-    float: left;
-    top: 50%;
-    left: 50%;
-    position: absolute;
-    border-radius:7px;
-    -webkit-border-radius:7px;
-    -moz-border-radius:7px;
-    transform: translate(-50%, -50%);
+
+.contentwrapper {
+  width: 90%;
+  margin-left:auto;
+  margin-right:auto;
+  background-color:rgba(255,255,255,0.5);
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-between;
+  height: auto;
+  flex-grow: 1;
+  margin-bottom: 1rem;
+  overflow: scroll;
 }
-#contact-form h2 {
-    font-size: 50px;
-    color: #000000;
+
+.contentwrapper::-webkit-scrollbar {
+  display: none;
 }
-#contact-form img {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 80%;
+
+.resultcard {
+  flex-grow: 0;
+  flex-shrink: 1;
+  flex-basis: auto;
+  background-color:rgba(245,245,245,1);
+  border-radius: 3px;
+  height: 10rem;
+  width: 30rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: .4rem;
+  margin-bottom: .4rem;
+  position:relative;
+  transition: box-shadow 0.3s ease-in-out;
+  cursor: pointer;
 }
-#contact-form hr {
-    border-color: rgba(160,160,160,0.5);
-    border-width: 1px;
-    box-shadow: 0 0 5px 2px rgba(160,160,160,0.2);
+
+.resultcard:hover {
+  box-shadow: 0 0 10px 5px rgba(44,170,226,0.25);
 }
-#contact-form input,
-#contact-form select,
-#contact-form textarea,
-#contact-form label {
-    font-size: 15px;
-    margin-bottom: 2px;
-    font-family: Arial, sans-serif;
+
+.albumimage {
+  height: 10rem;
+  width: 10rem;
+  border-radius: 3px 0px 0px 3px;
 }
-#contact-form input,
-#contact-form select,
-#contact-form textarea {
-    width:100%;
-    background: #fff;
-    border: 0;
+
+.cardlang {
+  height: 3rem;
+  width: 4rem;
+  left: 6rem;
+  bottom: 0;
+  position: absolute;
+}
+
+.cardinfo {
+  display: flex;
+  flex-direction: column;
+  line-height: 2rem;
+  height: 10rem;
+  left: 10rem;
+  position: absolute;
+  width: 20rem;
+  bottom: 0;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.cardtitle {
+  margin-top: .5rem;
+  height: 5rem;
+  margin-right: .2rem;
+  margin-left: .2rem;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 2rem;
+}
+
+.cardartist {
+  height: 3rem;
+  line-height: 1.1em;
+  margin-right: .2rem;
+  margin-left: .2rem;
+  font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: grey;
+}
+
+.modal {
+  font-family: 'Open Sans', sans-serif;
+}
+
+.modaltextdiv {
+  font-weight: bold;
+  font-size: 1.4em;
+  margin-top: 2em;
+  text-align: center
+}
+
+.modalnamebox {
+  width: 90%;
+  font-size: 1.2em;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  margin-top: .4em;
+}
+
+.pulse {
+  box-shadow: 0 25px 5px rgba(44,170,226, 0.4);
+  animation: pulse 5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    -moz-box-shadow: 0 0 25px 5px rgba(44,170,226, 0.2);
+    box-shadow: 0 0 25px 5px rgba(44,170,226, 0.2);
+  }
+  50% {
+      -moz-box-shadow: 0 0 25px 5px rgba(44,170,226, 0.5);
+      box-shadow: 0 0 25px 5px rgba(44,170,226, 0.5);
+  }
+  100% {
+    -moz-box-shadow: 0 0 25px 5px rgba(44,170,226, 0.2);
+    box-shadow: 0 0 25px 5px rgba(44,170,226, 0.2);
+  }
+}
+
+#songSelect {
+    font-size: 2.5vmax;
+    border-radius: 5px;
+    border: 1px solid #cccccc;
+    width: 70%;
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
-    border-radius: 4px;
     margin-bottom: 25px;
     padding: 5px;
     box-shadow: 0 0 7px 5px rgba(0,0,0,0.15);
     transition: box-shadow 0.3s ease-in-out;
 }
-#contact-form input:focus,
-#contact-form select:focus,
-#contact-form textarea:focus {
-    background-color: #F0F0F0;
-    box-shadow: 0 0 7px 5px rgba(0,0,0,0.35);
-}
-#contact-form input:hover {
-    box-shadow: 0 0 7px 5px rgba(0,0,0,0.25);;
-}
-#contact-form textarea {
-    width:100%;
-    height: 150px;
-}
-#contact-form button[type="submit"] {
-    cursor:pointer;
-    width:100%;
-    border:none;
-    background:#991D57;
-    background-image:linear-gradient(bottom, #8C1C50 0%, #991D57 52%);
-    background-image:-moz-linear-gradient(bottom, #8C1C50 0%, #991D57 52%);
-    background-image:-webkit-linear-gradient(bottom, #8C1C50 0%, #991D57 52%);
-    color:#FFF;
-    margin:0 0 5px;
-    padding:10px;
-    border-radius:5px;
-}
-#contact-form button[type="submit"]:hover {
-    background-image:linear-gradient(bottom, #9C215A 0%, #A82767 52%);
-    background-image:-moz-linear-gradient(bottom, #9C215A 0%, #A82767 52%);
-    background-image:-webkit-linear-gradient(bottom, #9C215A 0%, #A82767 52%);
-    -webkit-transition:background 0.3s ease-in-out;
-    -moz-transition:background 0.3s ease-in-out;
-    transition:background-color 0.3s ease-in-out;
-}
-#contact-form button[type="submit"]:active {
-    box-shadow:inset 0 1px 3px rgba(0,0,0,0.5);
-}
-input:required, textarea:required {
-    box-shadow: none;
-    -moz-box-shadow: none;
-    -webkit-box-shadow: none;
-    -o-box-shadow: none;
-}
-#contact-form .required {
-    font-weight:bold;
-    color: #E5E6E7;
-}
 
-/* Hide success/failure message
-   (especially since the php is missing) */
-#failure, #success {
-    color: #6EA070;
-    display:none;
-}
-
-/* Make form look nice on smaller screens */
-@media only screen and (max-width: 580px) {
-    #contact-form{
-        left: 3%;
-        margin-right: 3%;
-        width: 88%;
-        margin-left: 0;
-        padding-left: 3%;
-        padding-right: 3%;
-    }
-}
-
-.awesomplete {
-    width:100%;
-}
-
-#songSelect {
-    font-size: xx-large !important;
-}
-
-#singers {
-    max-width: 50%;
-    width: 500px;
-    margin: 0 auto;
-}
-
-#singers h1 {
-    color: #000000;
-    font-size: large;
-    margin-bottom: 10px;
+#songSelect:hover {
+  box-shadow: 0 0 7px 5px rgba(0,0,0,0.25);
 }
