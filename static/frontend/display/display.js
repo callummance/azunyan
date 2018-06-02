@@ -28,17 +28,24 @@ let nowPlayingSingerColour = 0x000000;
 function DisplayClient() {
     this.queue = [];
     this.queuedisplay = {};
+    this.partialqueuedisplay = {};
     this.cur = {};
     this.source = new window.EventSource('/api/queuestream');
     this.active = true;
     this.queueHasScrolled = false;
+    this.noSingers = 0;
 
     var client = this;
 
+    //Get the number of singers
+    $.get({url: "/api/nosingers", async: false}).done(function(data) {
+      client.noSingers = data;
+    });
     //Listen for SSEs
     this.source.addEventListener('queue',  function(e) {
         client.queue = JSON.parse(e.data);
-        client.queuedisplay = makeQueueDivs(client.queue, client.queuedisplay, client.cur);
+        client.queuedisplay = makeQueueDivs(client.queue, client.queuedisplay, client.cur, $('#queue'));
+        client.partialqueuedisplay = makePartialQueueDivs(client.queue, client.partialqueuedisplay, client.cur, $('#waiting'), client.noSingers)
     });
     this.source.addEventListener('cur', function(e) {
         client.cur = JSON.parse(e.data);
@@ -51,6 +58,7 @@ function DisplayClient() {
     this.source.addEventListener('message', function(e) {
         client.message.text = JSON.parse(e.data).message;
     });
+
 
     $("#queue").scroll(function() {
       client.queueHasScrolled = true;
@@ -113,7 +121,7 @@ function setNowPlaying(nowPlaying) {
 }
 
 
-function makeQueueDivs(queue, prevQueueDivs, nowPlaying) {
+function makeQueueDivs(queue, prevQueueDivs, nowPlaying, targetDiv) {
     let newQueueDisplay = {};
     queue.complete.map((q_entry, index) => {
         let newPos = index * 55;
@@ -132,7 +140,7 @@ function makeQueueDivs(queue, prevQueueDivs, nowPlaying) {
             let newdiv = $('<div/>')
                 .attr("id", itemid)
                 .addClass("queueitem");
-            $('#queue').append(newdiv);
+            targetDiv.append(newdiv);
 
             //Add relevant text
             newdiv.append(
@@ -174,6 +182,63 @@ function makeQueueDivs(queue, prevQueueDivs, nowPlaying) {
     return newQueueDisplay;
 }
 
+function makePartialQueueDivs(queue, prevQueueDivs, nowPlaying, targetDiv, noSingers) {
+    let newQueueDisplay = {};
+    queue.partial.map((q_entry, index) => {
+        itemid = q_entry.ids.join(".");
+        if (!prevQueueDivs.hasOwnProperty(itemid)) {
+            //Make a new div
+            let newdiv = $('<div/>')
+                .attr("id", itemid)
+                .addClass("partialItem");
+            targetDiv.append(newdiv);
+
+            let detailsDiv = $('<div/>')
+                .addClass("partialSongDetails");
+            newdiv.append(detailsDiv);
+
+            //Add relevant text
+            detailsDiv.append(
+                $('<div>')
+                    .addClass("partialitemtitle")
+                    .append("h1")
+                    .text(q_entry.title)
+            );
+            detailsDiv.append(
+                $('<div>')
+                    .addClass("partialitemartist")
+                    .append("h2")
+                    .text(q_entry.artist)
+            );
+            newdiv.append(
+                $('<div>')
+                    .addClass("partialitemsingerscount")
+                    .append("h3")
+            );
+            if (nowPlaying.ids != q_entry.ids) {
+                newQueueDisplay[itemid] = newdiv
+            }
+        } else {
+          targetDiv.append(prevQueueDivs[itemid])
+          if (nowPlaying.ids != q_entry.ids) {
+              newQueueDisplay[q_entry.ids] = prevQueueDivs[itemid]
+          }
+        }
+
+        //Either way, update the singer count
+        newQueueDisplay[itemid].find(".partialitemsingerscount")
+            .text(q_entry.singers.length + "/" + noSingers)
+
+    });
+    Object.keys(prevQueueDivs).map(divid => {
+        if (!(divid in newQueueDisplay)) {
+           $('#' + divid).fadeOut(() => {
+                $('#' + divid).remove();
+            });
+        }
+    });
+    return newQueueDisplay;
+}
 
 
 //UTILITY FUNCTIONS
