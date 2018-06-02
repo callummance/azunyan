@@ -1,10 +1,11 @@
 package db
 
 import (
+	"fmt"
+
 	"github.com/callummance/azunyan/models"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	"fmt"
 )
 
 func UpdateEngineState(env databaseConfig, newState models.State) error {
@@ -36,5 +37,5 @@ func InitialiseState(env databaseConfig) {
 }
 
 func getStateCollection(env databaseConfig) *mgo.Collection {
-	return env.GetSession().DB(env.GetDbConfig().DatabaseName).C("state")
+	return env.GetSession().DB(env.GetConfig().DbConfig.DatabaseName).C("state")
 }

@@ -1,9 +1,8 @@
 package webserver
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/callummance/azunyan/state"
 	"github.com/callummance/azunyan/manager"
+	"github.com/gin-gonic/gin"
 )
 
 func RouteAdmin(group *gin.RouterGroup) {
@@ -13,11 +12,11 @@ func RouteAdmin(group *gin.RouterGroup) {
 }
 
 type activeRequest struct {
-	Active	bool 	`json:"active" form:"active" binding:"required"`
+	Active bool `json:"active" form:"active" binding:"required"`
 }
 
-func activateEndpoint (c *gin.Context) {
-	env, ok := c.MustGet("env").(*state.Env)
+func activateEndpoint(c *gin.Context) {
+	env, ok := c.MustGet("manager").(*manager.KaraokeManager)
 	if !ok {
 		env.Logger.Printf("Failed to grab environment from Context variable")
 		c.String(500, "{\"message\": \"internal failure\"")
@@ -33,8 +32,8 @@ func activateEndpoint (c *gin.Context) {
 	}
 }
 
-func activateReqEndpoint (c *gin.Context) {
-	env, ok := c.MustGet("env").(*state.Env)
+func activateReqEndpoint(c *gin.Context) {
+	env, ok := c.MustGet("manager").(*manager.KaraokeManager)
 	if !ok {
 		env.Logger.Printf("Failed to grab environment from Context variable")
 		c.String(500, "{\"message\": \"internal failure\"")
@@ -51,12 +50,12 @@ func activateReqEndpoint (c *gin.Context) {
 }
 
 func advanceEndpoint(c *gin.Context) {
-	env, ok := c.MustGet("env").(*state.Env)
+	env, ok := c.MustGet("manager").(*manager.KaraokeManager)
 	if !ok {
 		env.Logger.Printf("Failed to grab environment from Context variable")
 		c.String(500, "{\"message\": \"internal failure\"")
 	}
 
-	manager.PopNextSong(*env)
+	manager.PopNextSong(env)
 	c.Status(201)
 }

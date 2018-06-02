@@ -28,6 +28,77 @@ func InsertRequest(env databaseConfig, request models.Request) error {
 	}
 }
 
+//CheckDupeRequest returns true iff the given request is a request for the same
+//song by the same person as another *active* request (that is, one that has
+//not already been played).
+func CheckDupeRequest(env databaseConfig, request models.Request) (bool, error) {
+	q := getReqCollection(env).Find(bson.M{
+		"singer":     request.Singer,
+		"song":       request.Song,
+		"playedtime": bson.M{"$exists": false},
+	})
+	cnt, err := q.Count()
+	if err != nil {
+		env.GetLog().Printf("Failure when checking if request is a duplicate: %v", err)
+		return false, err
+	}
+	return cnt > 0, nil
+}
+
+//GetLiveRequestsForSong returns a list of requests for a given song out of
+//those that have not yet been played
+func GetLiveRequestsForSong(env databaseConfig, sid bson.ObjectId) ([]models.Request, error) {
+	var res []models.Request
+	err := getReqCollection(env).Find(bson.M{
+		"song":       sid,
+		"playedtime": bson.M{"$exists": false},
+	}).All(res)
+	if err != nil {
+		env.GetLog().Printf("Failure whilst finding existing requests for a song: %v", err)
+		return nil, err
+	}
+	return res, nil
+}
+
+type songRequests struct {
+	ID       bson.ObjectId    `bson:"_id"`
+	Requests []models.Request `bson:"requests"`
+}
+
+//GetLiveAggregatedSongRequests returns a map mapping song IDs to a list of live
+//requests for that song.
+func GetLiveAggregatedSongRequests(env databaseConfig) (map[bson.ObjectId][]models.Request, error) {
+	var res []songRequests
+	pipeline := []bson.M{
+		bson.M{
+			"$match": bson.M{
+				"playedtime": bson.M{"$exists": false},
+			},
+		},
+		bson.M{
+			"$sort": bson.M{"time": 1},
+		},
+		bson.M{
+			"$group": bson.M{
+				"_id":      "$songid",
+				"requests": bson.M{"$push": "$$ROOT"},
+			},
+		},
+	}
+
+	err := getReqCollection(env).Pipe(pipeline).All(&res)
+	if err != nil {
+		env.GetLog().Printf("Failed to fetch song requests list due to error %q", err)
+		return nil, err
+	}
+
+	mapRes := make(map[bson.ObjectId][]models.Request)
+	for _, song := range res {
+		mapRes[song.ID] = song.Requests
+	}
+	return mapRes, nil
+}
+
 func GetPreviousRequestsBySong(env databaseConfig, songId bson.ObjectId, submitted time.Time) []models.Request {
 	var res []models.Request
 	col := getReqCollection(env)
@@ -88,5 +159,5 @@ func UpdateReqPrio(env databaseConfig, reqId bson.ObjectId, newPrio float64) err
 }
 
 func getReqCollection(env databaseConfig) *mgo.Collection {
-	return env.GetSession().DB(env.GetDbConfig().DatabaseName).C("request")
+	return env.GetSession().DB(env.GetConfig().DbConfig.DatabaseName).C("request")
 }

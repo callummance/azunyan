@@ -3,19 +3,19 @@ package webserver
 import (
 	//"net/http"
 
-	"github.com/callummance/azunyan/state"
+	"net/http"
+
+	"github.com/callummance/azunyan/manager"
 	"github.com/callummance/azunyan/webserver/middlewares"
 	"github.com/gin-gonic/gin"
-	"net/http"
-	"github.com/callummance/azunyan/webserver/stream"
 )
 
-func Route(env state.Env) *gin.Engine {
-	stream.InitBroadcaster()
+//Route sets up and returns a router for the webserver
+func Route(man manager.KaraokeManager) *gin.Engine {
 	router := gin.Default()
 
 	//Attach environment struct
-	router.Use(func(context *gin.Context) { middlewares.AttachEnvironment(env, context) })
+	router.Use(func(context *gin.Context) { middlewares.AttachEnvironment(&man, context) })
 
 	//Favicon
 	router.StaticFile("favicon.ico", "./static/frontend/favicon.ico")
@@ -28,6 +28,10 @@ func Route(env state.Env) *gin.Engine {
 	//API group
 	apig := router.Group("/api")
 	RouteApi(apig)
+
+	//Image Group
+	imgg := router.Group("/i")
+	RouteMedia(imgg)
 
 	//Admin group
 	adming := router.Group("/admin", gin.BasicAuth(gin.Accounts{

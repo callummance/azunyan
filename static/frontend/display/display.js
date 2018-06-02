@@ -28,16 +28,24 @@ let nowPlayingSingerColour = 0x000000;
 function DisplayClient() {
     this.queue = [];
     this.queuedisplay = {};
+    this.partialqueuedisplay = {};
     this.cur = {};
     this.source = new window.EventSource('/api/queuestream');
     this.active = true;
+    this.queueHasScrolled = false;
+    this.noSingers = 0;
 
-    let client = this;
+    var client = this;
 
+    //Get the number of singers
+    $.get({url: "/api/nosingers", async: false}).done(function(data) {
+      client.noSingers = data;
+    });
     //Listen for SSEs
     this.source.addEventListener('queue',  function(e) {
         client.queue = JSON.parse(e.data);
-        client.queuedisplay = makeQueueDivs(client.queue, client.queuedisplay, client.cur);
+        client.queuedisplay = makeQueueDivs(client.queue, client.queuedisplay, client.cur, $('#queue'));
+        client.partialqueuedisplay = makePartialQueueDivs(client.queue, client.partialqueuedisplay, client.cur, $('#waiting'), client.noSingers)
     });
     this.source.addEventListener('cur', function(e) {
         client.cur = JSON.parse(e.data);
@@ -50,6 +58,45 @@ function DisplayClient() {
     this.source.addEventListener('message', function(e) {
         client.message.text = JSON.parse(e.data).message;
     });
+
+
+    $("#queue").scroll(function() {
+      client.queueHasScrolled = true;
+    })
+    setTimeout(function() {
+      handleScrollQueue($("#queue"), client);
+    }, 5000);
+}
+
+function handleScrollQueue(targetDiv, client) {
+  let curScrollPosition = targetDiv.scrollTop();
+  let contentHeight = targetDiv[0].scrollHeight;
+  let divHeight = targetDiv.height();
+  let viewportBottom = curScrollPosition + divHeight;
+
+  if (client.queueHasScrolled) {
+    client.queueHasScrolled = false;
+    setTimeout(function() {
+      handleScrollQueue($("#queue"), client);
+    }, 2000);
+  } else if (viewportBottom >= contentHeight) {
+    //We are already at the bottom, scroll back up
+    targetDiv.animate({
+      scrollTop: 0
+    });
+    setTimeout(function() {
+      handleScrollQueue($("#queue"), client);
+    }, 10000);
+  } else {
+    //Scroll down to the next set of items
+    targetDiv.animate({
+      scrollTop: viewportBottom
+    });
+    setTimeout(function() {
+      handleScrollQueue($("#queue"), client);
+    }, 1000);
+  }
+
 }
 
 function setActive(newState) {
@@ -61,54 +108,58 @@ function setActive(newState) {
 }
 
 function setNowPlaying(nowPlaying) {
-    let title = nowPlaying.songtitle;
-    let artist = nowPlaying.songartist;
+    let title = nowPlaying.title;
+    let artist = nowPlaying.artist;
     let singers = nowPlaying.singers.join(", ");
+    let sid = nowPlaying.sid;
+    let coverImg = "/i/cover/" + sid
 
     $('#title').text(title);
     $('#artist').text(artist);
     $('#singers').text(singers);
+    $('#cover').attr("src", coverImg);
 }
 
 
-function makeQueueDivs(queue, prevQueueDivs, nowPlaying) {
+function makeQueueDivs(queue, prevQueueDivs, nowPlaying, targetDiv) {
     let newQueueDisplay = {};
-    queue.map((q_entry, index) => {
+    queue.complete.map((q_entry, index) => {
         let newPos = index * 55;
-        itemid = q_entry.reqid;
+        itemid = q_entry.ids.join(".");
+        console.log(itemid);
         if (prevQueueDivs.hasOwnProperty(itemid)) {
             //Thingy is already in queue
             prevQueueDivs[itemid].animate({
                 top: newPos
             }, 1000);
-            if (nowPlaying.reqid != q_entry.reqid) {
-                newQueueDisplay[q_entry.reqid] = prevQueueDivs[itemid]
+            if (nowPlaying.ids != q_entry.ids) {
+                newQueueDisplay[q_entry.ids] = prevQueueDivs[itemid]
             }
         } else {
             //Make a new div
             let newdiv = $('<div/>')
                 .attr("id", itemid)
                 .addClass("queueitem");
-            $('#queue').append(newdiv);
+            targetDiv.append(newdiv);
 
             //Add relevant text
             newdiv.append(
                 $('<div>')
                     .addClass("itemtitle")
                     .append("h1")
-                    .text(q_entry.songtitle)
+                    .text(q_entry.title)
             );
             newdiv.append(
                 $('<div>')
                     .addClass("itemartist")
                     .append("h2")
-                    .text(q_entry.songartist)
+                    .text(q_entry.artist)
             );
             newdiv.append(
                 $('<div>')
                     .addClass("itemsingers")
                     .append("h3")
-                    .text(q_entry.singers)
+                    .text(q_entry.singers.join(", "))
             );
 
             //Sort out positioning
@@ -116,8 +167,8 @@ function makeQueueDivs(queue, prevQueueDivs, nowPlaying) {
             newdiv.animate({
                 top: newPos
             }, 1000);
-            if (nowPlaying.reqid != q_entry.reqid) {
-                newQueueDisplay[q_entry.reqid] = newdiv
+            if (nowPlaying.ids != q_entry.ids) {
+                newQueueDisplay[itemid] = newdiv
             }
         }
     });
@@ -131,6 +182,63 @@ function makeQueueDivs(queue, prevQueueDivs, nowPlaying) {
     return newQueueDisplay;
 }
 
+function makePartialQueueDivs(queue, prevQueueDivs, nowPlaying, targetDiv, noSingers) {
+    let newQueueDisplay = {};
+    queue.partial.map((q_entry, index) => {
+        itemid = q_entry.ids.join(".");
+        if (!prevQueueDivs.hasOwnProperty(itemid)) {
+            //Make a new div
+            let newdiv = $('<div/>')
+                .attr("id", itemid)
+                .addClass("partialItem");
+            targetDiv.append(newdiv);
+
+            let detailsDiv = $('<div/>')
+                .addClass("partialSongDetails");
+            newdiv.append(detailsDiv);
+
+            //Add relevant text
+            detailsDiv.append(
+                $('<div>')
+                    .addClass("partialitemtitle")
+                    .append("h1")
+                    .text(q_entry.title)
+            );
+            detailsDiv.append(
+                $('<div>')
+                    .addClass("partialitemartist")
+                    .append("h2")
+                    .text(q_entry.artist)
+            );
+            newdiv.append(
+                $('<div>')
+                    .addClass("partialitemsingerscount")
+                    .append("h3")
+            );
+            if (nowPlaying.ids != q_entry.ids) {
+                newQueueDisplay[itemid] = newdiv
+            }
+        } else {
+          targetDiv.append(prevQueueDivs[itemid])
+          if (nowPlaying.ids != q_entry.ids) {
+              newQueueDisplay[q_entry.ids] = prevQueueDivs[itemid]
+          }
+        }
+
+        //Either way, update the singer count
+        newQueueDisplay[itemid].find(".partialitemsingerscount")
+            .text(q_entry.singers.length + "/" + noSingers)
+
+    });
+    Object.keys(prevQueueDivs).map(divid => {
+        if (!(divid in newQueueDisplay)) {
+           $('#' + divid).fadeOut(() => {
+                $('#' + divid).remove();
+            });
+        }
+    });
+    return newQueueDisplay;
+}
 
 
 //UTILITY FUNCTIONS
