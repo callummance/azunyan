@@ -3,7 +3,8 @@ package models
 import (
 	"time"
 
-	"gopkg.in/mgo.v2/bson"
+	"github.com/globalsign/mgo/bson"
+	// "gopkg.in/mgo.v2/bson"
 )
 
 //Request contains details on a single request that someone made for a song.

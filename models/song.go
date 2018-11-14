@@ -1,7 +1,8 @@
 package models
 
 import (
-	"gopkg.in/mgo.v2/bson"
+	// "gopkg.in/mgo.v2/bson"
+	"github.com/globalsign/mgo/bson"
 )
 
 //Song contains metadata on a single song but without image and other large or

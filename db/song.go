@@ -7,8 +7,10 @@ import (
 	"runtime/debug"
 
 	"github.com/callummance/azunyan/models"
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
+	"github.com/globalsign/mgo"
+	"github.com/globalsign/mgo/bson"
+	// "gopkg.in/mgo.v2"
+	// "gopkg.in/mgo.v2/bson"
 )
 
 func ImportJSONSongList(env databaseConfig, fileLoc string) {
@@ -65,6 +67,7 @@ func GetSongTAS(env databaseConfig) []models.SongSearchData {
 		"title":  1,
 		"artist": 1,
 		"source": 1}).All(&songs)
+	// env.GetLog().Printf("%+v\n", songs)
 	if err != nil {
 		env.GetLog().Printf("Could not fetch songlist due to error %q", err)
 	}
@@ -83,6 +86,7 @@ func GetSongByID(env databaseConfig, sid bson.ObjectId) (*models.Song, error) {
 		"genre":    1,
 		"year":     1}).One(&res)
 	if err != nil && err.Error() == "not found" {
+		env.GetLog().Printf("Couldn't find song with id %q", sid)
 		return nil, nil
 	} else if err != nil {
 		debug.PrintStack()
@@ -112,7 +116,7 @@ func GetSongCoverByID(env databaseConfig, sid bson.ObjectId) ([]byte, error) {
 }
 
 func getCollection(env databaseConfig) *mgo.Collection {
-	return env.GetSession().DB(env.GetConfig().DbConfig.DatabaseName).C("song")
+	return env.GetSession().DB(env.GetConfig().DbConfig.DatabaseName).C(env.GetConfig().DbConfig.DatabaseCollectionName)
 }
 
 func checkSongExists(env databaseConfig, song models.Song) bool {

@@ -5,7 +5,8 @@ import (
 
 	"github.com/callummance/azunyan/db"
 	"github.com/callummance/azunyan/models"
-	"gopkg.in/mgo.v2/bson"
+	// "gopkg.in/mgo.v2/bson"
+	"github.com/globalsign/mgo/bson"
 )
 
 //AddRequest takes a singer and the song id as a string and adds it to the

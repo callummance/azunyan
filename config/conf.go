@@ -21,6 +21,7 @@ type KaraokeConfig struct {
 type DbConfig struct {
 	DatabaseAddress string `toml:"dbaddr"`
 	DatabaseName    string `toml:"dbname"`
+	DatabaseCollectionName string `toml:"dbcollection"`
 }
 
 type Config struct {

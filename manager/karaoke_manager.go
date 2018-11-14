@@ -8,7 +8,8 @@ import (
 	"github.com/callummance/azunyan/db"
 	"github.com/callummance/fuwafuwasearch/levenshteinmatrix"
 	broadcast "github.com/dustin/go-broadcast"
-	mgo "gopkg.in/mgo.v2"
+	// mgo "gopkg.in/mgo.v2"
+	mgo "github.com/globalsign/mgo"
 )
 
 type KaraokeManager struct {

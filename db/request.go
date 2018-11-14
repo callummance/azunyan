@@ -5,8 +5,10 @@ import (
 	"time"
 
 	"github.com/callummance/azunyan/models"
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
+	// "gopkg.in/mgo.v2"
+	"github.com/globalsign/mgo"
+	"github.com/globalsign/mgo/bson"
+	// "gopkg.in/mgo.v2/bson"
 )
 
 func InsertRequest(env databaseConfig, request models.Request) error {

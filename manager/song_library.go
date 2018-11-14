@@ -7,7 +7,8 @@ import (
 
 	"github.com/callummance/azunyan/db"
 	"github.com/callummance/azunyan/models"
-	"gopkg.in/mgo.v2/bson"
+	//"gopkg.in/mgo.v2/bson"
+	"github.com/globalsign/mgo/bson"
 )
 
 //GetSongCoverImage returns a bytestring containing the cover image for the

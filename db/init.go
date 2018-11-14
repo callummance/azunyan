@@ -2,9 +2,9 @@ package db
 
 import (
 	"log"
-
 	"github.com/callummance/azunyan/config"
-	"gopkg.in/mgo.v2"
+	// "gopkg.in/mgo.v2"
+	"github.com/globalsign/mgo"
 )
 
 type databaseConfig interface {

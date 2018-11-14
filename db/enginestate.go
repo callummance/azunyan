@@ -4,7 +4,8 @@ import (
 	"fmt"
 
 	"github.com/callummance/azunyan/models"
-	"gopkg.in/mgo.v2"
+	// "gopkg.in/mgo.v2"
+	"github.com/globalsign/mgo"
 	"gopkg.in/mgo.v2/bson"
 )
 
