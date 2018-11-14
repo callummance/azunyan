@@ -1,12 +1,12 @@
-#Azunyan
+# Azunyan
 A song request and queueing system for karaoke, written for ICAS.
 
-##Getting started
+## Getting started
 
-###Configuration
+### Configuration
 Configuration for this program is stored within `azunyan.conf`. The default file is populated with all fields supported. 
 
-###Docker
+### Docker
 First, you need to modify the configuration file as described above.
 
 
