@@ -126,14 +126,13 @@ function makeQueueDivs(queue, prevQueueDivs, nowPlaying, targetDiv) {
     queue.complete.map((q_entry, index) => {
         let newPos = index * 55;
         itemid = q_entry.ids.join(".");
-        console.log(itemid);
         if (prevQueueDivs.hasOwnProperty(itemid)) {
             //Thingy is already in queue
             prevQueueDivs[itemid].animate({
                 top: newPos
             }, 1000);
             if (nowPlaying.ids != q_entry.ids) {
-                newQueueDisplay[q_entry.ids] = prevQueueDivs[itemid]
+                newQueueDisplay[itemid] = prevQueueDivs[itemid]
             }
         } else {
             //Make a new div
