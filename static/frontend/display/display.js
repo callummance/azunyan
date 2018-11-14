@@ -184,52 +184,53 @@ function makeQueueDivs(queue, prevQueueDivs, nowPlaying, targetDiv) {
 
 function makePartialQueueDivs(queue, prevQueueDivs, nowPlaying, targetDiv, noSingers) {
     let newQueueDisplay = {};
-    queue.partial.map((q_entry, index) => {
-        itemid = q_entry.ids.join(".");
-        if (!prevQueueDivs.hasOwnProperty(itemid)) {
-            //Make a new div
-            let newdiv = $('<div/>')
-                .attr("id", itemid)
-                .addClass("partialItem");
-            targetDiv.append(newdiv);
+    if (queue.partial != null) {
+      queue.partial.map((q_entry, index) => {
+          itemid = q_entry.ids.join(".");
+          if (!prevQueueDivs.hasOwnProperty(itemid)) {
+              //Make a new div
+              let newdiv = $('<div/>')
+                  .attr("id", itemid)
+                  .addClass("partialItem");
+              targetDiv.append(newdiv);
 
-            let detailsDiv = $('<div/>')
-                .addClass("partialSongDetails");
-            newdiv.append(detailsDiv);
+              let detailsDiv = $('<div/>')
+                  .addClass("partialSongDetails");
+              newdiv.append(detailsDiv);
 
-            //Add relevant text
-            detailsDiv.append(
-                $('<div>')
-                    .addClass("partialitemtitle")
-                    .append("h1")
-                    .text(q_entry.title)
-            );
-            detailsDiv.append(
-                $('<div>')
-                    .addClass("partialitemartist")
-                    .append("h2")
-                    .text(q_entry.artist)
-            );
-            newdiv.append(
-                $('<div>')
-                    .addClass("partialitemsingerscount")
-                    .append("h3")
-            );
+              //Add relevant text
+              detailsDiv.append(
+                  $('<div>')
+                      .addClass("partialitemtitle")
+                      .append("h1")
+                      .text(q_entry.title)
+              );
+              detailsDiv.append(
+                  $('<div>')
+                      .addClass("partialitemartist")
+                      .append("h2")
+                      .text(q_entry.artist)
+              );
+              newdiv.append(
+                  $('<div>')
+                      .addClass("partialitemsingerscount")
+                      .append("h3")
+              );
+              if (nowPlaying.ids != q_entry.ids) {
+                  newQueueDisplay[itemid] = newdiv
+              }
+          } else {
+            targetDiv.append(prevQueueDivs[itemid])
             if (nowPlaying.ids != q_entry.ids) {
-                newQueueDisplay[itemid] = newdiv
+                newQueueDisplay[q_entry.ids] = prevQueueDivs[itemid]
             }
-        } else {
-          targetDiv.append(prevQueueDivs[itemid])
-          if (nowPlaying.ids != q_entry.ids) {
-              newQueueDisplay[q_entry.ids] = prevQueueDivs[itemid]
           }
-        }
 
         //Either way, update the singer count
         newQueueDisplay[itemid].find(".partialitemsingerscount")
             .text(q_entry.singers.length + "/" + noSingers)
-
-    });
+      });
+    }
     Object.keys(prevQueueDivs).map(divid => {
         if (!(divid in newQueueDisplay)) {
            $('#' + divid).fadeOut(() => {
