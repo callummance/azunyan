@@ -1,0 +1,17 @@
+version: "3.7"
+services:
+  azunyan:
+    build: .
+    image: azunyan
+    ports:
+      - target: 8080
+        published: 8080
+        protocol: tcp
+        mode: host
+    secrets:
+      - source: conf_file
+        target: azunyan_conf
+
+secrets:
+  conf_file:
+    file: "./azunyan.conf"
