@@ -4,10 +4,9 @@ FROM golang:1.11-alpine
 #Need git to fetch packages
 RUN apk update && apk upgrade && apk add --no-cache bash git openssh
 
-#Also install bower to get js packages for frontend
+#Also install yarn to get js packages for frontend
 RUN apk add --no-cache nodejs npm && \
-    npm install -g bower grunt-cli && \
-    echo '{ "allow_root": true }' > /root/.bowerrc
+    npm install -g yarn grunt-cli && \
 
 #Get the latest version from git
 RUN go get -u github.com/callummance/azunyan
@@ -22,8 +21,8 @@ RUN go install -i github.com/callummance/azunyan
 #Change pwd so that static files work fine
 WORKDIR /go/src/github.com/callummance/azunyan/static/frontend
 
-#Get bower deps
-RUN bower install /go/src/github.com/callummance/azunyan/static/frontend
+#Get frontend deps
+RUN yarn
 
 WORKDIR /go/src/github.com/callummance/azunyan/
 
