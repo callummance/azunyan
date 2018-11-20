@@ -7,6 +7,17 @@ jQuery(document).ready(function($){
 
   var searchTimeoutReady = true;
 
+  var lazyInstance = $(".albumimage").Lazy({
+    effect: "fadeIn",
+    chainable: false,
+    autoDestroy: false,
+    appendScroll: $("#resultsbox"),
+    beforeLoad: function(elem, resp) {
+      console.log("Now loading element");
+      console.log(elem);
+    },
+  });
+
   if (!String.prototype.trim) {
     String.prototype.trim = function () {
       return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
@@ -61,13 +72,18 @@ jQuery(document).ready(function($){
     searchResults = newResults;
     searchTimeoutReady = true;
     latestRecieved = setNo;
+    lazyInstance.update();
+  }
+
+  function setLazy(img) {
+    lazyInstance.addItems(img);
   }
 
   function createResultCard(result, card) {
     let imgurl = "/i/cover/" + result.id;
     let imgobj = $(document.createElement("img"));
     imgobj.addClass("albumimage");
-    imgobj.attr("src", imgurl);
+    imgobj.attr("data-src", imgurl);
     let countryobj = $(document.createElement("div"));
     countryobj.addClass("cardlang");
     countryobj.addClass("flag-icon-background");
@@ -90,7 +106,9 @@ jQuery(document).ready(function($){
 
     card.click(function(e) {
       selectedSong(result.id);
-    })
+    });
+
+    setLazy(imgobj);
   }
 
   function selectedSong(id){
