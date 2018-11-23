@@ -25,8 +25,10 @@ jQuery(document).ready(function($){
   }
 
   (function() {
-    searchBox.on("keydown", function() {
-      requestSearch(searchBox.val())
+    searchBox.on("keydown", function(e) {
+      if (e.which == 13) {
+        requestSearch(searchBox.val())
+      }
     })
   }());
 
@@ -139,7 +141,9 @@ jQuery(document).ready(function($){
       if (name.trim() == "") {
         alert("Please enter a name.\n\nThis version of the karaoke queue uses names to match singers up, as well as to prevent the queue being clogged with requests from people that have left.\nThank you for your understanding.");
       } else {
-        submitSelection(id, name);
+        submitSelection(id, name, function() {
+          modal.close()
+        });
       }
       console.log(name + " has requested " + id);
     })
@@ -149,7 +153,7 @@ jQuery(document).ready(function($){
     modal.open();
   }
 
-  function submitSelection(sid, name) {
+  function submitSelection(sid, name, success) {
     let requestObj = {
       songid: sid,
       singer: name
@@ -162,6 +166,7 @@ jQuery(document).ready(function($){
     })
     .done(function(data, textStatus) {
       alert("Request Submitted!")
+      success();
     })
     .fail(function(data, textStatus, errorThrown) {
       alert("Something went wrong: " + errorThrown)
