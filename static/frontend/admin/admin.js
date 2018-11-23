@@ -30,10 +30,23 @@ function AdminPanel() {
         $('#nowPlaying').text(admin.nowPlaying.title + " - " + admin.nowPlaying.artist);
     };
 
-    //Setup the modal
+    //Setup the singer removal modal
     let modal = document.getElementById('removeModal');
     let btn = document.getElementById("removeActivate");
-    let span = document.getElementsByClassName("close")[0];
+    let span = document.getElementById("close_remove");
+
+    btn.onclick = function() {modal.style.display = "block";};
+    span.onclick = function() {modal.style.display = "none";};
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+
+    //Setup the reset modal
+    modal = document.getElementById('resetModal');
+    btn = document.getElementById("resetActivate");
+    span = document.getElementById("close_reset");
 
     btn.onclick = function() {modal.style.display = "block";};
     span.onclick = function() {modal.style.display = "none";};
@@ -70,12 +83,15 @@ function AdminPanel() {
         contentType: 'application/json'
     });});
     $('#sendDelete').click(function() {jQuery.ajax({
-        type: "POST",
-        url: '/admin/remove_singer',
-        data: JSON.stringify({"singer": $('#removeName').val()}),
-        contentType: 'application/json'
+          type: "POST",
+          url: '/admin/remove_singer',
+          data: JSON.stringify({"singer": $('#removeName').val()}),
+          contentType: 'application/json'
+      });
+      modal.style.display = "none";
     });
-        modal.style.display = "none";});
+    $('#sendReset').click(function() {jQuery.post('/admin/reset_queue');});
+        modal.style.display = "none";
     $(document).keypress(function(e) {
         //Also advance on space bar
         if (e.which == 32) {

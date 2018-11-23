@@ -39,6 +39,16 @@ func RemoveSinger(m *KaraokeManager, singer string) error {
 	return err
 }
 
+//Reset removes ALL requests.
+func Reset(m *KaraokeManager) error {
+	err := db.ResetRequests(m)
+	if err != nil {
+		return err
+	}
+	err = FetchAndUpdateListenersQueue(m)
+	return err
+}
+
 //SetActive sets the karaoke system active and supdates all listeners
 func SetActive(m *KaraokeManager, newActiveState bool) error {
 	newstate, err := db.GetEngineState(m, m.GetConfig().KaraokeConfig.SessionName)

@@ -10,6 +10,22 @@ func RouteAdmin(group *gin.RouterGroup) {
 	group.POST("/req_active", activateReqEndpoint)
 	group.POST("/advance", advanceEndpoint)
 	group.POST("/remove_singer", removeSingerEndpoint)
+	group.POST("/reset_queue", resetQueueEndpoint)
+}
+
+func resetQueueEndpoint(c *gin.Context) {
+	env, ok := c.MustGet("manager").(*manager.KaraokeManager)
+	if !ok {
+		env.Logger.Printf("Failed to grab environment from Context variable")
+		c.String(500, "{\"message\": \"internal failure\"")
+	}
+
+	err := manager.Reset(env)
+	if err != nil {
+		c.Error(err)
+	} else {
+		c.Status(201)
+	}
 }
 
 type activeRequest struct {

@@ -21,18 +21,31 @@
     <br><br>
     <button id = "removeActivate" class = "settings">Remove Singer</button>
     <br><br>
+    <button id = "resetActivate" class = "settings">Reset Queue (DANGER)</button>
 </div>
 
 
 
-<!-- The Modal -->
+<!-- Singer Removal Modal -->
 <div id="removeModal" class="modal">
     <!-- Modal content -->
     <div class="modal-content">
-        <span class="close">&times;</span>
+        <span id="close_remove" class="close">&times;</span>
         <div id = removeBox>
             <input name = "Singer Name" id = "removeName" class = "textBox"></input><br>
             <button id = "sendDelete" class = "settings">Submit</button>
+        </div>
+    </div>
+</div>
+
+<!-- Reset Modal -->
+<div id="resetModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span id="close_reset" class="close">&times;</span>
+        <div id = resetBox>
+          <p>Are you really sure you want to do this?</p>
+          <button id = "sendReset" class = "settings">Do it.</button>
         </div>
     </div>
 </div>

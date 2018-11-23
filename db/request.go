@@ -30,6 +30,12 @@ func InsertRequest(env databaseConfig, request models.Request) error {
 	}
 }
 
+//ResetRequests removes all requests stored in the current azunyan session
+func ResetRequests(env databaseConfig) error {
+	_, err := getReqCollection(env).RemoveAll(nil)
+	return err
+}
+
 //RemoveRequests removes all the requests by a given singer and returns the number of items deleted
 func RemoveRequests(env databaseConfig, singer string) (int, error) {
 	inf, err := getReqCollection(env).RemoveAll(bson.M{

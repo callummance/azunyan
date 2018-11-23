@@ -3,6 +3,14 @@
     font-size: 9em;
 }
 
+#sendReset {
+  background-color: red
+}
+
+#resetActivate {
+  background-color: red
+}
+
 .settings {
     background-color: #008CBA;
     border-radius: 3px;
