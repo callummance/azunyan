@@ -30,6 +30,19 @@ func InsertRequest(env databaseConfig, request models.Request) error {
 	}
 }
 
+//RemoveRequests removes all the requests by a given singer and returns the number of items deleted
+func RemoveRequests(env databaseConfig, singer string) (int, error) {
+	inf, err := getReqCollection(env).RemoveAll(bson.M{
+		"singer": singer,
+	})
+
+	if err != nil {
+		env.GetLog().Printf("Failure when removing requests: %v", err)
+		return -1, err
+	}
+	return inf.Removed, nil
+}
+
 //CheckDupeRequest returns true iff the given request is a request for the same
 //song by the same person as another *active* request (that is, one that has
 //not already been played).

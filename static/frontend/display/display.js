@@ -123,58 +123,60 @@ function setNowPlaying(nowPlaying) {
 
 function makeQueueDivs(queue, prevQueueDivs, nowPlaying, targetDiv) {
     let newQueueDisplay = {};
-    queue.complete.map((q_entry, index) => {
-        let newPos = index * 55;
-        itemid = q_entry.ids.join(".");
-        if (prevQueueDivs.hasOwnProperty(itemid)) {
-            //Thingy is already in queue
-            prevQueueDivs[itemid].animate({
-                top: newPos
-            }, 1000);
-            if (nowPlaying.ids != q_entry.ids) {
-                newQueueDisplay[itemid] = prevQueueDivs[itemid]
-            }
-        } else {
-            //Make a new div
-            let newdiv = $('<div/>')
-                .attr("id", itemid)
-                .addClass("queueitem");
-            targetDiv.append(newdiv);
+    if (queue.complete != null) {
+      queue.complete.map((q_entry, index) => {
+          let newPos = index * 55;
+          itemid = q_entry.ids.join(".");
+          if (prevQueueDivs.hasOwnProperty(itemid)) {
+              //Thingy is already in queue
+              prevQueueDivs[itemid].animate({
+                  top: newPos
+              }, 1000);
+              if (nowPlaying.ids != q_entry.ids) {
+                  newQueueDisplay[itemid] = prevQueueDivs[itemid]
+              }
+          } else {
+              //Make a new div
+              let newdiv = $('<div/>')
+                  .attr("id", itemid)
+                  .addClass("queueitem");
+              targetDiv.append(newdiv);
 
-            //Add relevant text
-            newdiv.append(
-                $('<div>')
-                    .addClass("itemtitle")
-                    .append("h1")
-                    .text(q_entry.title)
-            );
-            newdiv.append(
-                $('<div>')
-                    .addClass("itemartist")
-                    .append("h2")
-                    .text(q_entry.artist)
-            );
-            newdiv.append(
-                $('<div>')
-                    .addClass("itemsingers")
-                    .append("h3")
-                    .text(q_entry.singers.join(", "))
-            );
+              //Add relevant text
+              newdiv.append(
+                  $('<div>')
+                      .addClass("itemtitle")
+                      .append("h1")
+                      .text(q_entry.title)
+              );
+              newdiv.append(
+                  $('<div>')
+                      .addClass("itemartist")
+                      .append("h2")
+                      .text(q_entry.artist)
+              );
+              newdiv.append(
+                  $('<div>')
+                      .addClass("itemsingers")
+                      .append("h3")
+                      .text(q_entry.singers.join(", "))
+              );
 
-            //Sort out positioning
-            newdiv.css("top", $(window).height());
-            newdiv.animate({
-                top: newPos
-            }, 1000);
-            if (nowPlaying.ids != q_entry.ids) {
-                newQueueDisplay[itemid] = newdiv
-            }
-        }
-    });
+              //Sort out positioning
+              newdiv.css("top", $(window).height());
+              newdiv.animate({
+                  top: newPos
+              }, 1000);
+              if (nowPlaying.ids != q_entry.ids) {
+                  newQueueDisplay[itemid] = newdiv
+              }
+          }
+      });
+    }
     Object.keys(prevQueueDivs).map(divid => {
         if (!(divid in newQueueDisplay)) {
-           $('#' + divid).fadeOut(() => {
-                $('#' + divid).remove();
+           $(document.getElementById(divid)).fadeOut(() => {
+                $(document.getElementById(divid)).remove();
             });
         }
     });

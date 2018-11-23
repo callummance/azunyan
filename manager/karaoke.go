@@ -5,6 +5,7 @@ import (
 
 	"github.com/callummance/azunyan/db"
 	"github.com/callummance/azunyan/models"
+
 	// "gopkg.in/mgo.v2/bson"
 	"github.com/globalsign/mgo/bson"
 )
@@ -23,6 +24,16 @@ func AddRequest(m *KaraokeManager, singer string, song string) error {
 	err := db.InsertRequest(m, req)
 	if err != nil {
 		m.Logger.Printf("Could not insert request for song %s due to error %s", song, err)
+	}
+	err = FetchAndUpdateListenersQueue(m)
+	return err
+}
+
+//RemoveSinger removes all requests by a singer with the given name
+func RemoveSinger(m *KaraokeManager, singer string) error {
+	_, err := db.RemoveRequests(m, singer)
+	if err != nil {
+		return err
 	}
 	err = FetchAndUpdateListenersQueue(m)
 	return err

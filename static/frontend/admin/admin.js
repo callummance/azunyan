@@ -31,8 +31,8 @@ function AdminPanel() {
     };
 
     //Setup the modal
-    let modal = document.getElementById('updateModal');
-    let btn = document.getElementById("updateActivate");
+    let modal = document.getElementById('removeModal');
+    let btn = document.getElementById("removeActivate");
     let span = document.getElementsByClassName("close")[0];
 
     btn.onclick = function() {modal.style.display = "block";};
@@ -40,22 +40,6 @@ function AdminPanel() {
     window.onclick = function(event) {
         if (event.target == modal) {
             modal.style.display = "none";
-        }
-    };
-
-    //Setup the modal
-    let qmodal = document.getElementById('queueModal');
-    let qbtn = document.getElementById("queueActivate");
-    let qspan = document.getElementsByClassName("close")[0];
-
-    qbtn.onclick = function() {
-        qmodal.style.display = "block";
-        loadQueue("queueTable");
-    };
-    qspan.onclick = function() {qmodal.style.display = "none";};
-    window.onclick = function(event) {
-        if (event.target == qmodal) {
-            qmodal.style.display = "none";
         }
     };
 
@@ -85,16 +69,21 @@ function AdminPanel() {
         data: JSON.stringify({"active": false}),
         contentType: 'application/json'
     });});
-    $('#sendUpdate').click(function() {jQuery.ajax({
+    $('#sendDelete').click(function() {jQuery.ajax({
         type: "POST",
-        url: '/admin/merge_songs',
-        data: $('#jsonField').val(),
+        url: '/admin/remove_singer',
+        data: JSON.stringify({"singer": $('#removeName').val()}),
         contentType: 'application/json'
     });
         modal.style.display = "none";});
     $(document).keypress(function(e) {
         //Also advance on space bar
-        if (e.which == 32) {jQuery.post('/admin/advance');}
+        if (e.which == 32) {
+          let modal = document.getElementById('removeModal');
+          if (modal.style.display == "none") {
+            jQuery.post('/admin/advance');
+          }
+        }
     });
 }
 
