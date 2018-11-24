@@ -31,28 +31,28 @@ function AdminPanel() {
     };
 
     //Setup the singer removal modal
-    let modal = document.getElementById('removeModal');
-    let btn = document.getElementById("removeActivate");
-    let span = document.getElementById("close_remove");
+    let remove_modal = document.getElementById('removeModal');
+    let remove_btn = document.getElementById("removeActivate");
+    let remove_span = document.getElementById("close_remove");
 
-    btn.onclick = function() {modal.style.display = "block";};
-    span.onclick = function() {modal.style.display = "none";};
+    remove_btn.onclick = function() {remove_modal.style.display = "block";};
+    remove_span.onclick = function() {remove_modal.style.display = "none";};
     window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
+        if (event.target == remove_modal) {
+            remove_modal.style.display = "none";
         }
     };
 
     //Setup the reset modal
-    modal = document.getElementById('resetModal');
-    btn = document.getElementById("resetActivate");
-    span = document.getElementById("close_reset");
+    let reset_modal = document.getElementById('resetModal');
+    let reset_btn = document.getElementById("resetActivate");
+    let reset_span = document.getElementById("close_reset");
 
-    btn.onclick = function() {modal.style.display = "block";};
-    span.onclick = function() {modal.style.display = "none";};
+    reset_btn.onclick = function() {reset_modal.style.display = "block";};
+    reset_span.onclick = function() {reset_modal.style.display = "none";};
     window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
+        if (event.target == reset_modal) {
+            reset_modal.style.display = "none";
         }
     };
 
@@ -88,15 +88,15 @@ function AdminPanel() {
           data: JSON.stringify({"singer": $('#removeName').val()}),
           contentType: 'application/json'
       });
-      modal.style.display = "none";
+      remove_modal.style.display = "none";
     });
     $('#sendReset').click(function() {jQuery.post('/admin/reset_queue');});
-        modal.style.display = "none";
+        reset_modal.style.display = "none";
     $(document).keypress(function(e) {
         //Also advance on space bar
         if (e.which == 32) {
-          let modal = document.getElementById('removeModal');
-          if (modal.style.display == "none") {
+          let remove_modal = document.getElementById('removeModal');
+          if (remove_modal.style.display == "none") {
             jQuery.post('/admin/advance');
           }
         }

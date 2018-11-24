@@ -141,8 +141,8 @@ jQuery(document).ready(function($){
       if (name.trim() == "") {
         alert("Please enter a name.\n\nThis version of the karaoke queue uses names to match singers up, as well as to prevent the queue being clogged with requests from people that have left.\nThank you for your understanding.");
       } else {
+        modal.close()
         submitSelection(id, name, function() {
-          modal.close()
         });
       }
       console.log(name + " has requested " + id);
@@ -158,6 +158,7 @@ jQuery(document).ready(function($){
       songid: sid,
       singer: name
     };
+    modal.close()
     $.ajax({
       url: "/api/addrequest",
       type: "POST",
