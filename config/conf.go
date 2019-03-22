@@ -2,6 +2,7 @@ package config
 
 import (
 	"log"
+	"os"
 
 	"github.com/BurntSushi/toml"
 )
@@ -19,8 +20,8 @@ type KaraokeConfig struct {
 }
 
 type DbConfig struct {
-	DatabaseAddress string `toml:"dbaddr"`
-	DatabaseName    string `toml:"dbname"`
+	DatabaseAddress        string `toml:"dbaddr"`
+	DatabaseName           string `toml:"dbname"`
 	DatabaseCollectionName string `toml:"dbcollection"`
 }
 
@@ -35,6 +36,9 @@ func LoadConfig(loc string, logger *log.Logger) Config {
 	if _, err := toml.DecodeFile(loc, &res); err != nil {
 		logger.Fatal(err)
 	}
+	res.DbConfig.DatabaseAddress = os.Getenv("dbaddr")
+	res.DbConfig.DatabaseCollectionName = os.Getenv("azunyan")
+	res.DbConfig.DatabaseName = os.Getenv("azunyan")
 
 	return res
 }
