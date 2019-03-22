@@ -158,7 +158,6 @@ jQuery(document).ready(function($){
       songid: sid,
       singer: name
     };
-    modal.close()
     $.ajax({
       url: "/api/addrequest",
       type: "POST",
