@@ -3,29 +3,29 @@ package models
 import (
 	"time"
 
-	"github.com/globalsign/mgo/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	// "gopkg.in/mgo.v2/bson"
 )
 
 //Request contains details on a single request that someone made for a song.
 type Request struct {
-	ReqID       bson.ObjectId `json:"_" bson:"_id"`
-	ReqTime     time.Time     `json:"time" bson:"time"`
-	Singer      string        `json:"singer" bson:"singer"`
-	Song        bson.ObjectId `json:"songid" bson:"songid"`
-	PriorityMod int           `json:"prioritymod" bson:"prioritymod"`
-	PlayedTime  *time.Time    `json:"playedtime" bson:"playedtime,omitempty"`
+	ReqID       primitive.ObjectID `json:"_" bson:"_id"`
+	ReqTime     time.Time          `json:"time" bson:"time"`
+	Singer      string             `json:"singer" bson:"singer"`
+	Song        primitive.ObjectID `json:"songid" bson:"songid"`
+	PriorityMod int                `json:"prioritymod" bson:"prioritymod"`
+	PlayedTime  *time.Time         `json:"playedtime" bson:"playedtime,omitempty"`
 }
 
 //QueueItem contains details on an enqueued song, aggregated from its
 //requests
 type QueueItem struct {
-	RequestIDs   []bson.ObjectId `json:"ids"`
-	SongID       bson.ObjectId   `json:"sid"`
-	SongTitle    string          `json:"title"`
-	SongArtist   string          `json:"artist"`
-	Singers      []string        `json:"singers"`
-	RequestTimes []time.Time     `json:"times"`
+	RequestIDs   []primitive.ObjectID `json:"ids"`
+	SongID       primitive.ObjectID   `json:"sid"`
+	SongTitle    string               `json:"title"`
+	SongArtist   string               `json:"artist"`
+	Singers      []string             `json:"singers"`
+	RequestTimes []time.Time          `json:"times"`
 }
 
 //CompileQueueItems takes a list of requests for a song, as well as the song's
@@ -46,7 +46,7 @@ func CompileQueueItems(reqs []Request, song *Song, maxSingers int) ([]QueueItem,
 			SongID:       song.ID,
 			SongTitle:    song.Title,
 			SongArtist:   song.Artist,
-			RequestIDs:   []bson.ObjectId{},
+			RequestIDs:   []primitive.ObjectID{},
 			Singers:      []string{},
 			RequestTimes: []time.Time{},
 		}
@@ -64,7 +64,7 @@ func CompileQueueItems(reqs []Request, song *Song, maxSingers int) ([]QueueItem,
 			SongID:       song.ID,
 			SongTitle:    song.Title,
 			SongArtist:   song.Artist,
-			RequestIDs:   []bson.ObjectId{},
+			RequestIDs:   []primitive.ObjectID{},
 			Singers:      []string{},
 			RequestTimes: []time.Time{},
 		}

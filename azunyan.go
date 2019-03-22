@@ -21,7 +21,6 @@ func main() {
 	fmt.Printf("Starting azunyan with config file %q", confFileLoc)
 	//Load the config file
 	env := manager.Initialize(confFileLoc)
-	(&env).UpdateSession()
 
 	db.InitialiseState(&env)
 

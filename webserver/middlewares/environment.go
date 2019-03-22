@@ -6,9 +6,6 @@ import (
 )
 
 func AttachEnvironment(manager *manager.KaraokeManager, c *gin.Context) {
-	newMan := manager.UpdateSession()
-	defer newMan.CloseSession()
-
-	c.Set("manager", newMan)
+	c.Set("manager", manager)
 	c.Next()
 }

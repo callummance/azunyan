@@ -8,12 +8,15 @@ import (
 	"github.com/callummance/azunyan/db"
 	"github.com/callummance/fuwafuwasearch/levenshteinmatrix"
 	broadcast "github.com/dustin/go-broadcast"
+
 	// mgo "gopkg.in/mgo.v2"
-	mgo "github.com/globalsign/mgo"
+	// mgo "github.com/globalsign/mgo"
+	mgo "go.mongodb.org/mongo-driver/mongo"
 )
 
+// KaraokeManager object
 type KaraokeManager struct {
-	DbSession         *mgo.Session
+	DbClient          *mgo.Client
 	Logger            *log.Logger
 	Config            config.Config
 	UpdateSubscribers broadcast.Broadcaster
@@ -22,11 +25,12 @@ type KaraokeManager struct {
 	SourceSearch      *levenshteinmatrix.LMatrixSearch
 }
 
+// Initialize creates a new KaraokeManager object
 func Initialize(configLoc string) KaraokeManager {
 	var newManager KaraokeManager
 	newManager.Logger = log.New(os.Stderr, "AZUNYAN: ", log.Lshortfile|log.Ldate|log.Ltime)
 	newManager.Config = config.LoadConfig(configLoc, newManager.Logger)
-	newManager.DbSession = db.InitDB(newManager.Config, newManager.Logger)
+	newManager.DbClient = db.InitDB(newManager.Config, newManager.Logger)
 	newManager.UpdateSubscribers = broadcast.NewBroadcaster(broadcastBufLen)
 	songSearchData := db.GetSongTAS(&newManager)
 	var ids []interface{}
@@ -46,30 +50,22 @@ func Initialize(configLoc string) KaraokeManager {
 	return newManager
 }
 
-func (m *KaraokeManager) UpdateSession() *KaraokeManager {
-	newSession := db.GetNewSession(m)
-	return &KaraokeManager{
-		DbSession:         newSession,
-		Logger:            m.Logger,
-		Config:            m.Config,
-		UpdateSubscribers: m.UpdateSubscribers,
-		TitleSearch:       m.TitleSearch,
-		ArtistSearch:      m.ArtistSearch,
-		SourceSearch:      m.SourceSearch}
-}
-
+// CloseSession closes database connection
 func (m *KaraokeManager) CloseSession() {
 	db.CloseSession(m)
 }
 
-func (m *KaraokeManager) GetSession() *mgo.Session {
-	return m.DbSession
+// GetClient returns the database
+func (m *KaraokeManager) GetClient() *mgo.Client {
+	return m.DbClient
 }
 
+// GetConfig returns the configuration stored in the configuration file
 func (m *KaraokeManager) GetConfig() config.Config {
 	return m.Config
 }
 
+// GetLog returns the logger
 func (m *KaraokeManager) GetLog() *log.Logger {
 	return m.Logger
 }

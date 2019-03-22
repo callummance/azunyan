@@ -1,33 +1,43 @@
 package db
 
 import (
+	"context"
 	"log"
+	"time"
+
+	"go.mongodb.org/mongo-driver/mongo/readpref"
+
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+
 	"github.com/callummance/azunyan/config"
 	// "gopkg.in/mgo.v2"
-	"github.com/globalsign/mgo"
+	// "github.com/globalsign/mgo"
 )
 
+// Karaoke Manager implements this interface
 type databaseConfig interface {
-	GetSession() *mgo.Session
+	GetClient() *mongo.Client
 	GetConfig() config.Config
 	GetLog() *log.Logger
 }
 
-func InitDB(config config.Config, log *log.Logger) *mgo.Session {
-	session, err := mgo.Dial(config.DbConfig.DatabaseAddress)
+// InitDB connects to the MongoDB database and returns a client object
+func InitDB(config config.Config, log *log.Logger) *mongo.Client {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(config.DbConfig.DatabaseAddress))
 	if err != nil {
 		log.Fatalf("Failed to connect to database %v due to error '%v'", config.DbConfig.DatabaseAddress, err)
 	}
-
-	return session
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		log.Fatalf("Failed to connect to database %v due to error '%v'", config.DbConfig.DatabaseAddress, err)
+	}
+	return client
 }
 
-func GetNewSession(conf databaseConfig) *mgo.Session {
-	s := conf.GetSession()
-
-	return s.Copy()
-}
-
+// CloseSession disconnects the client
 func CloseSession(conf databaseConfig) {
-	conf.GetSession().Close()
+	conf.GetClient().Disconnect(context.TODO())
 }

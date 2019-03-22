@@ -3,25 +3,31 @@ package manager
 import (
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
+
 	"github.com/callummance/azunyan/db"
 	"github.com/callummance/azunyan/models"
-
 	// "gopkg.in/mgo.v2/bson"
-	"github.com/globalsign/mgo/bson"
 )
 
 //AddRequest takes a singer and the song id as a string and adds it to the
 //request queue, also updating any listeners.
 func AddRequest(m *KaraokeManager, singer string, song string) error {
+	objID, err := primitive.ObjectIDFromHex(song)
+	if err != nil {
+		m.Logger.Printf("Could not insert request for song %s due to error %s", song, err)
+		err = FetchAndUpdateListenersQueue(m)
+		return err
+	}
 	req := models.Request{
-		ReqID:       bson.NewObjectId(),
+		ReqID:       primitive.NewObjectID(),
 		ReqTime:     time.Now(),
 		Singer:      singer,
-		Song:        bson.ObjectIdHex(song),
+		Song:        objID,
 		PriorityMod: 0,
 		PlayedTime:  nil,
 	}
-	err := db.InsertRequest(m, req)
+	err = db.InsertRequest(m, req)
 	if err != nil {
 		m.Logger.Printf("Could not insert request for song %s due to error %s", song, err)
 	}

@@ -54,22 +54,22 @@ jQuery(document).ready(function($){
     newResults = {};
     if (setNo < latestRecieved) { return; }
     results.forEach(function(newSong) {
-      if (newSong.id in searchResults) {
+      if (newSong.ID in searchResults) {
         //We already have that song
-        newResults[newSong.id] = searchResults[newSong.id];
-        searchResults[newSong.id].detach();
+        newResults[newSong.ID] = searchResults[newSong.ID];
+        // searchResults[newSong.ID].detach();
       } else {
         //Create a new display object for the song
 
         let songCard = $(document.createElement("article"));
         songCard.addClass("resultcard");
         createResultCard(newSong, songCard);
-        newResults[newSong.id] = songCard;
+        newResults[newSong.ID] = songCard;
       }
     });
     resultsBox.empty()
     results.forEach(function(result) {
-      resultsBox.append(newResults[result.id]);
+      resultsBox.append(newResults[result.ID]);
     });
     searchResults = newResults;
     searchTimeoutReady = true;
@@ -82,7 +82,7 @@ jQuery(document).ready(function($){
   }
 
   function createResultCard(result, card) {
-    let imgurl = "/i/cover/" + result.id;
+    let imgurl = "/i/cover/" + result.ID;
     let imgobj = $(document.createElement("img"));
     imgobj.addClass("albumimage");
     imgobj.attr("data-src", imgurl);
@@ -107,7 +107,7 @@ jQuery(document).ready(function($){
     card.append(infoobj);
 
     card.click(function(e) {
-      selectedSong(result.id);
+      selectedSong(result.ID);
     });
 
     setLazy(imgobj);

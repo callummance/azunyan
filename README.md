@@ -2,6 +2,15 @@
 A song request and queueing system for karaoke, written for ICAS.
 
 ## Getting started
+Run:
+
+```
+cd static\frontend
+npm install
+cd ..\..
+go build
+```
+
 
 ### Configuration
 Configuration for this program is stored within `azunyan.conf`. The default file is populated with all fields supported. 
