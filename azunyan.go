@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
+	"strconv"
 
 	"github.com/callummance/azunyan/db"
 	"github.com/callummance/azunyan/manager"
@@ -26,5 +28,9 @@ func main() {
 
 	//Start listening for web requests
 	router := webserver.Route(env)
-	router.Run(fmt.Sprintf(":%d", env.Config.WebConfig.Port))
+	port, err := strconv.Atoi(os.Getenv("PORT"))
+	if err != nil || port == 0 {
+		port = env.Config.WebConfig.Port
+	}
+	router.Run(fmt.Sprintf(":%d", port))
 }

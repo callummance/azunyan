@@ -4,6 +4,8 @@ import (
 	"log"
 	"os"
 
+	"github.com/joho/godotenv"
+
 	"github.com/BurntSushi/toml"
 )
 
@@ -36,9 +38,12 @@ func LoadConfig(loc string, logger *log.Logger) Config {
 	if _, err := toml.DecodeFile(loc, &res); err != nil {
 		logger.Fatal(err)
 	}
-	res.DbConfig.DatabaseAddress = os.Getenv("dbaddr")
-	res.DbConfig.DatabaseCollectionName = os.Getenv("dbcollection")
-	res.DbConfig.DatabaseName = os.Getenv("dbname")
+	err := godotenv.Load()
+	if err == nil {
+		res.DbConfig.DatabaseAddress = os.Getenv("dbaddr")
+		res.DbConfig.DatabaseCollectionName = os.Getenv("dbcollection")
+		res.DbConfig.DatabaseName = os.Getenv("dbname")
+	}
 
 	return res
 }
