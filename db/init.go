@@ -24,7 +24,7 @@ type databaseConfig interface {
 
 // InitDB connects to the MongoDB database and returns a client object
 func InitDB(config config.Config, log *log.Logger) *mongo.Client {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(config.DbConfig.DatabaseAddress))
 	if err != nil {
