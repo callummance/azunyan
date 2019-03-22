@@ -10,7 +10,6 @@ Dependencies:
 Installation:
 
 ```
-cd static\frontend
 npm install
 cd ..\..
 dep ensure
@@ -51,5 +50,6 @@ docker-compose up
 To deploy to Heroku, first install the Heroku cli then run
 ```
 heroku create
+heroku buildpacks:add --index 2 heroku/nodejs
 git push heroku master
 ```

@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "flag-icon-css": "^3.3.0",
+    "jquery-lazy": "^1.7.10",
+    "tingle.js": "^0.14.0"
+  },
+  "engines": {
+    "yarn": ">= 1.0.0"
+  },
+  "scripts": {
+    "postinstall": "mv ./node_modules ./static/frontend/node_modules"
+  }
+}
