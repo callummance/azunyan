@@ -37,8 +37,8 @@ func LoadConfig(loc string, logger *log.Logger) Config {
 		logger.Fatal(err)
 	}
 	res.DbConfig.DatabaseAddress = os.Getenv("dbaddr")
-	res.DbConfig.DatabaseCollectionName = os.Getenv("azunyan")
-	res.DbConfig.DatabaseName = os.Getenv("azunyan")
+	res.DbConfig.DatabaseCollectionName = os.Getenv("dbcollection")
+	res.DbConfig.DatabaseName = os.Getenv("dbname")
 
 	return res
 }
