@@ -3,6 +3,8 @@ package config
 import (
 	"log"
 	"os"
+	"reflect"
+	"strconv"
 
 	"github.com/joho/godotenv"
 
@@ -40,10 +42,32 @@ func LoadConfig(loc string, logger *log.Logger) Config {
 	}
 	err := godotenv.Load()
 	if err == nil {
-		res.DbConfig.DatabaseAddress = os.Getenv("dbaddr")
-		res.DbConfig.DatabaseCollectionName = os.Getenv("dbcollection")
-		res.DbConfig.DatabaseName = os.Getenv("dbname")
+		loadEVarIfExists(&res.DbConfig.DatabaseAddress, "dbaddr", logger)
+		loadEVarIfExists(&res.DbConfig.DatabaseCollectionName, "dbcollection", logger)
+		loadEVarIfExists(&res.DbConfig.DatabaseName, "dbname", logger)
+		loadEVarIfExists(&res.KaraokeConfig.SessionName, "session", logger)
+		loadEVarIfExists(&res.KaraokeConfig.NoSingers, "nosingers", logger)
+		loadEVarIfExists(&res.KaraokeConfig.TimeMultiplier, "timemultiplier", logger)
+		loadEVarIfExists(&res.KaraokeConfig.WaitMultiplier, "waitmultiplier", logger)
+		loadEVarIfExists(&res.KaraokeConfig.DefaultAlbumCover, "defaultcover", logger)
+		loadEVarIfExists(&res.WebConfig.Port, "webport", logger)
 	}
 
 	return res
+}
+
+func loadEVarIfExists(target interface{}, varName string, logger *log.Logger) {
+	if os.Getenv(varName) != "" {
+		targetVal := reflect.ValueOf(target)
+		switch targetVal.Kind() {
+		case reflect.String:
+			targetVal.SetString(os.Getenv(varName))
+		case reflect.Int:
+			val, err := strconv.ParseInt(os.Getenv(varName), 10, 32)
+			if err != nil {
+				logger.Fatal(err)
+			}
+			targetVal.SetInt(val)
+		}
+	}
 }
