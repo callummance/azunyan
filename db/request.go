@@ -144,7 +144,7 @@ func GetLiveAggregatedSongRequests(env databaseConfig) (map[primitive.ObjectID][
 	return mapRes, nil
 }
 
-func GetPreviousRequestsBySong(env databaseConfig, songId primitive.ObjectID, submitted time.Time) []models.Request {
+func GetPreviousRequestsBySong(env databaseConfig, songId primitive.ObjectID, submitted time.Time) ([]models.Request, error) {
 	var res []models.Request
 	col := getReqCollection(env)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -155,13 +155,14 @@ func GetPreviousRequestsBySong(env databaseConfig, songId primitive.ObjectID, su
 	})
 	if err != nil {
 		env.GetLog().Printf("Failure when getting previous requests: %q", err)
+		return nil, err
 	}
 	res, err = resultsToRequestsArray(cursor)
 	if err != nil {
 		env.GetLog().Printf("Failure whilst converting results to an array: %v", err)
-		return res
+		return res, err
 	}
-	return res
+	return res, nil
 }
 
 func GetPreviousRequestsBySinger(env databaseConfig, singer string, submitted time.Time) []models.Request {
