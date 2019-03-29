@@ -12,10 +12,6 @@ import (
 	"github.com/callummance/azunyan/models"
 	"github.com/globalsign/mgo/bson"
 
-	// "gopkg.in/mgo.v2"
-	// "github.com/globalsign/mgo"
-	//"github.com/globalsign/mgo/bson"
-	// "gopkg.in/mgo.v2/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
