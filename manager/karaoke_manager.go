@@ -9,8 +9,6 @@ import (
 	"github.com/callummance/fuwafuwasearch/levenshteinmatrix"
 	broadcast "github.com/dustin/go-broadcast"
 
-	// mgo "gopkg.in/mgo.v2"
-	// mgo "github.com/globalsign/mgo"
 	mgo "go.mongodb.org/mongo-driver/mongo"
 )
 

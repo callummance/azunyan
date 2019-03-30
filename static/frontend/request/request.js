@@ -7,15 +7,22 @@ jQuery(document).ready(function($){
 
   var searchTimeoutReady = true;
 
-  var lazyInstance = $(".albumimage").Lazy({
+  var lazyInstance = $("#resultsBox .albumimage").Lazy({
     effect: "fadeIn",
+    visibleOnly: true,
     chainable: false,
     autoDestroy: false,
+    threshold: 0,
     appendScroll: $("#resultsbox"),
     beforeLoad: function(elem, resp) {
       console.log("Now loading element");
       console.log(elem);
     },
+  });
+
+  // Set an onclick handler on the results box
+  $("#resultsbox").on("click","article", function(event) {
+    selectedSong(event.currentTarget.id);
   });
 
   if (!String.prototype.trim) {
@@ -72,7 +79,6 @@ jQuery(document).ready(function($){
       resultsBox.append(newResults[result.ID]);
     });
     searchResults = newResults;
-    searchTimeoutReady = true;
     latestRecieved = setNo;
     lazyInstance.update();
   }
@@ -105,10 +111,7 @@ jQuery(document).ready(function($){
     card.append(imgobj);
     card.append(countryobj);
     card.append(infoobj);
-
-    card.click(function(e) {
-      selectedSong(result.ID);
-    });
+    card.attr("id", result.ID);
 
     setLazy(imgobj);
   }

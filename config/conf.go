@@ -58,7 +58,7 @@ func LoadConfig(loc string, logger *log.Logger) Config {
 
 func loadEVarIfExists(target interface{}, varName string, logger *log.Logger) {
 	if os.Getenv(varName) != "" {
-		targetVal := reflect.ValueOf(target)
+		targetVal := reflect.Indirect(reflect.ValueOf(target))
 		switch targetVal.Kind() {
 		case reflect.String:
 			targetVal.SetString(os.Getenv(varName))
@@ -68,6 +68,8 @@ func loadEVarIfExists(target interface{}, varName string, logger *log.Logger) {
 				logger.Fatal(err)
 			}
 			targetVal.SetInt(val)
+		default:
+			logger.Fatal("Unknown type: ", targetVal.Kind())
 		}
 	}
 }

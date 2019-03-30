@@ -11,8 +11,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"github.com/callummance/azunyan/config"
-	// "gopkg.in/mgo.v2"
-	// "github.com/globalsign/mgo"
 )
 
 // Karaoke Manager implements this interface

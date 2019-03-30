@@ -80,7 +80,15 @@
   revision = "2a8bb927dd31d8daada140a5d09578521ce5c36a"
 
 [[projects]]
-  digest = "1:9a855f51d5eaf25dafc30cf0ad5844d5fb6aacec4ceb98a04ed2964562edbc0c"
+  digest = "1:ecd9aa82687cf31d1585d4ac61d0ba180e42e8a6182b85bd785fcca8dfeefc1b"
+  name = "github.com/joho/godotenv"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "23d116af351c84513e1946b527c88823e476be13"
+  version = "v1.3.0"
+
+[[projects]]
+  digest = "1:be97e109f627d3ba8edfef50c9c74f0d0c17cbe3a2e924a8985e4804a894f282"
   name = "github.com/json-iterator/go"
   packages = ["."]
   pruneopts = "UT"
@@ -219,6 +227,7 @@
     "github.com/dustin/go-broadcast",
     "github.com/gin-gonic/gin",
     "github.com/globalsign/mgo/bson",
+    "github.com/joho/godotenv",
     "go.mongodb.org/mongo-driver/bson/primitive",
     "go.mongodb.org/mongo-driver/mongo",
     "go.mongodb.org/mongo-driver/mongo/options",

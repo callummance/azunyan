@@ -10,10 +10,6 @@ import (
 	"github.com/callummance/azunyan/models"
 	"github.com/globalsign/mgo/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	// "gopkg.in/mgo.v2"
-	//"github.com/globalsign/mgo"
-	// "gopkg.in/mgo.v2/bson"
-	//"github.com/globalsign/mgo/bson"
 )
 
 // Updates the state collection with new state fields
