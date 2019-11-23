@@ -52,6 +52,7 @@ func Reset(m *KaraokeManager) error {
 		return err
 	}
 	err = FetchAndUpdateListenersQueue(m)
+	UpdateListenersCur(m, nil)
 	return err
 }
 

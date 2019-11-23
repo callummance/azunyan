@@ -12,7 +12,25 @@ body {
     z-index: 10;
     visibility: visible;
     background-size: cover;
-    background: url("../images/azunyan.gif") no-repeat center;
+    background: white;
+}
+
+#overlay #welcomeimage {
+    margin-top: 150px;
+    max-height: 40vh;
+    max-width: 65vw;
+    margin-left: 4rem;
+    margin-right: auto;
+    display: block;
+}
+
+#overlay #azunyangif {
+    position: absolute;
+    bottom: 0px;
+    right:0px;
+    z-index: -1;
+    height: 100vh;
+    width: 100vw;
 }
 
 #leftbar {
@@ -103,15 +121,6 @@ body {
     display: none;
 }
 
-
-#overlay img{
-    position:absolute;
-    top:50%;
-    left:200px;
-    height: 400px;
-    margin-top: -200px;
-
-}
 
 .queueitem {
     border-radius: 5px;

@@ -98,6 +98,8 @@ func getNext(cq []models.QueueItem, iq []models.QueueItem) *models.QueueItem {
 
 //PopNextSong fetches the next song to be played and marks it as played. It
 //also updates all listeners with a new song list and now playing.
+//completedQueue represents songs that have filled the number of singers
+//partialQueue are songs that are awaiting singers
 func PopNextSong(m *KaraokeManager) (*models.QueueItem, error) {
 	completeQueue, partialQueue, err := GetQueue(m)
 	if err != nil {
@@ -105,18 +107,28 @@ func PopNextSong(m *KaraokeManager) (*models.QueueItem, error) {
 		return nil, err
 	}
 	next := getNext(completeQueue, partialQueue)
-	markQueueItemPlayed(m, next)
-	var origState models.State
-	curState, err := db.GetEngineState(m, m.GetConfig().KaraokeConfig.SessionName)
-	if err != nil {
-		m.Logger.Printf("Failed to get karaoke engine state due to error %v", err)
-		return nil, err
+	if next != nil {
+		m.Logger.Printf("Popping next song")
+		markQueueItemPlayed(m, next)
+		var origState models.State
+		curState, err := db.GetEngineState(m, m.GetConfig().KaraokeConfig.SessionName)
+		if err != nil {
+			m.Logger.Printf("Failed to get karaoke engine state due to error %v", err)
+			return nil, err
+		} else {
+			origState = *curState
+		}
+		origState.NowPlaying = next
+		db.UpdateEngineState(m, origState)
+		UpdateListenersQueue(m, removeNowPlayingFromList(next, completeQueue), removeNowPlayingFromList(next, partialQueue))
 	} else {
-		origState = *curState
+		m.Logger.Printf("No more songs left in queue")
+		db.ClearEngineState(m)
+		newState := models.InitSession(m.GetConfig())
+		newState.IsActive = true
+		newState.RequestsActive = true
+		db.UpdateEngineState(m, newState)
 	}
-	origState.NowPlaying = next
-	db.UpdateEngineState(m, origState)
-	UpdateListenersQueue(m, removeNowPlayingFromList(next, completeQueue), removeNowPlayingFromList(next, partialQueue))
 	UpdateListenersCur(m, next)
 	return next, nil
 }
