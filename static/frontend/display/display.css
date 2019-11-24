@@ -70,6 +70,12 @@ body {
     background: linear-gradient(top, deepskyblue, white); /* Standard syntax */
 }
 
+.mainbody_title {
+    margin-left: 30px;
+    margin-top: 20px;
+    font-size: 2.2rem;
+}
+
 #nowplaying{
     border-radius: 10px;
     margin:20px;
@@ -110,13 +116,12 @@ body {
 #queue{
     position: relative;
     top:0;
-    left:50px;
     right:0;
-    height: 70%;
+    height: 55%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 10px;
+    margin: 10px 10px 10px 60px;
     overflow: scroll;
 }
 
@@ -159,19 +164,17 @@ body {
 
 
 #waiting{
-  left: 50px;
   right: 0px;
   overflow: scroll;
   position: relative;
   height: 25%;
-  width: 90%;
-  margin: 10px;
+  margin: 10px 10px 10px 60px;
   border-radius: 10px;
   background-color: lightgrey;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  padding: 5px;
+  padding: 5px 0;
   justify-content: space-between;
 }
 
