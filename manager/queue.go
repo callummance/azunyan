@@ -44,12 +44,12 @@ func GetQueue(m *KaraokeManager) ([]models.QueueItem, []models.QueueItem, error)
 				m.Logger.Printf("Failed to get details of queued song %v due to error %v", sid, err)
 				continue
 			}
-			qis, incompleteQi := models.CompileQueueItems(rs, song, state.NoSingers)
-			if qis != nil && len(qis) != 0 {
-				filledItems = append(filledItems, qis...)
+			completedQueue, incompleteQueue := models.CompileQueueItems(rs, song, state.NoSingers)
+			if completedQueue != nil && len(completedQueue) != 0 {
+				filledItems = append(filledItems, completedQueue...)
 			}
-			if incompleteQi != nil {
-				waitingItems = append(waitingItems, *incompleteQi)
+			if incompleteQueue != nil {
+				waitingItems = append(waitingItems, *incompleteQueue)
 			}
 		}
 	}
@@ -133,14 +133,14 @@ func PopNextSong(m *KaraokeManager) (*models.QueueItem, error) {
 	return next, nil
 }
 
-//IsDupeRequest returns true iff the given request is for a song which has already been sung or which has
-//also been requested by enough people to form a full party.
+//IsDupeRequest returns true iff the given request
+//has been requested by enough people before to form a full party.
 func IsDupeRequest(m *KaraokeManager, sid primitive.ObjectID) (bool, error) {
 	prevRequests, err := db.GetPreviousRequestsBySong(m, sid, time.Now())
 	if err != nil {
 		m.Logger.Printf("Failed to get previous requests when searching for dupe requests for %v with error %v", sid, err)
 	}
-	return len(prevRequests) <= m.Config.KaraokeConfig.NoSingers, nil
+	return len(prevRequests) > m.Config.KaraokeConfig.NoSingers, nil
 }
 
 func removeNowPlayingFromList(np *models.QueueItem, list []models.QueueItem) []models.QueueItem {
