@@ -24,9 +24,22 @@ services:
       - MONGO_INITDB_DATABASE=azunyan
     volumes:
       - ./data/db:/data/db
-    ports:
-      - 27017:27017
     command: mongod --logpath=/dev/null
+
+  openssh-server:
+    image: linuxserver/openssh-server
+    environment:
+      - PUID=1000
+      - GUID=1000
+      - TZ=Europe/London
+      - PASSWORD_ACCESS=true
+      - USER_PASSWORD=azunyan
+    volumes:
+      - ./container-scripts/enable_portforward.sh:/config/custom-cont-init.d/pf.sh
+    ports:
+      - 2222:2222
+    restart: unless-stopped
+
 secrets:
   conf_file:
     file: "./azunyan.conf"
