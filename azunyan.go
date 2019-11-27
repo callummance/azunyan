@@ -20,7 +20,7 @@ func main() {
 	var confFileLoc string
 	flag.StringVar(&confFileLoc, "c", configLoc, "location of the config file")
 	flag.Parse()
-	fmt.Printf("Starting azunyan with config file %q", confFileLoc)
+	fmt.Printf("Starting azunyan with config file %q\n", confFileLoc)
 	//Load the config file
 	env := manager.Initialize(confFileLoc)
 
