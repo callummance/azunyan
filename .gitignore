@@ -20,6 +20,8 @@ node_modules
 #idea settings
 .idea
 
+#data directory for docker compose
+data/db/*
 #vscode
 .vscode
 

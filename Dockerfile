@@ -1,12 +1,12 @@
 #Use the official golang image based on alpine
-FROM golang:1.11-alpine
+FROM golang:1.13-alpine
 
 #Need git to fetch packages
-RUN apk update && apk upgrade && apk add --no-cache bash git openssh
+RUN apk update && apk upgrade && apk add --no-cache bash git openssh gcc musl-dev
 
 #Also install yarn to get js packages for frontend
 RUN apk add --no-cache nodejs npm && \
-    npm install -g yarn grunt-cli && \
+    npm install -g yarn grunt-cli 
 
 #Get the latest version from git
 RUN go get -u github.com/callummance/azunyan

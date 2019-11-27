@@ -42,17 +42,18 @@ func LoadConfig(loc string, logger *log.Logger) Config {
 		logger.Fatal(err)
 	}
 	err := godotenv.Load()
-	if err == nil {
-		loadEVarIfExists(&res.DbConfig.DatabaseAddress, "dbaddr", logger)
-		loadEVarIfExists(&res.DbConfig.DatabaseCollectionName, "dbcollection", logger)
-		loadEVarIfExists(&res.DbConfig.DatabaseName, "dbname", logger)
-		loadEVarIfExists(&res.KaraokeConfig.SessionName, "session", logger)
-		loadEVarIfExists(&res.KaraokeConfig.NoSingers, "nosingers", logger)
-		loadEVarIfExists(&res.KaraokeConfig.TimeMultiplier, "timemultiplier", logger)
-		loadEVarIfExists(&res.KaraokeConfig.WaitMultiplier, "waitmultiplier", logger)
-		loadEVarIfExists(&res.KaraokeConfig.DefaultAlbumCover, "defaultcover", logger)
-		loadEVarIfExists(&res.WebConfig.Port, "webport", logger)
+	if err != nil {
+		logger.Printf("Could not load .env filei: %v", err)
 	}
+	loadEVarIfExists(&res.DbConfig.DatabaseAddress, "dbaddr", logger)
+	loadEVarIfExists(&res.DbConfig.DatabaseCollectionName, "dbcollection", logger)
+	loadEVarIfExists(&res.DbConfig.DatabaseName, "dbname", logger)
+	loadEVarIfExists(&res.KaraokeConfig.SessionName, "session", logger)
+	loadEVarIfExists(&res.KaraokeConfig.NoSingers, "nosingers", logger)
+	loadEVarIfExists(&res.KaraokeConfig.TimeMultiplier, "timemultiplier", logger)
+	loadEVarIfExists(&res.KaraokeConfig.WaitMultiplier, "waitmultiplier", logger)
+	loadEVarIfExists(&res.KaraokeConfig.DefaultAlbumCover, "defaultcover", logger)
+	loadEVarIfExists(&res.WebConfig.Port, "webport", logger)
 
 	return res
 }
