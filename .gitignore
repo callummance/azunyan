@@ -19,3 +19,9 @@ node_modules
 
 #idea settings
 .idea
+
+#vscode
+.vscode
+
+#Vendor modules
+vendor
