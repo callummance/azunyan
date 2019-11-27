@@ -21,6 +21,7 @@ type KaraokeConfig struct {
 	TimeMultiplier    int    `toml:"timemultiplier"`
 	WaitMultiplier    int    `toml:"waitmultiplier"`
 	DefaultAlbumCover string `toml:"defaultcoverimage"`
+	AllowDupes        bool   `toml:"allowdupes"`
 }
 
 type DbConfig struct {

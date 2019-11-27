@@ -22,6 +22,6 @@ func InitSession(conf config.Config) State {
 		NoSingers:      conf.KaraokeConfig.NoSingers,
 		IsActive:       false,
 		RequestsActive: false,
-		AllowingDupes:  false,
+		AllowingDupes:  conf.KaraokeConfig.AllowDupes,
 	}
 }

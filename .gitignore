@@ -22,3 +22,8 @@ node_modules
 
 #data directory for docker compose
 data/db/*
+#vscode
+.vscode
+
+#Vendor modules
+vendor

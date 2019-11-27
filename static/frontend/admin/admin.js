@@ -17,8 +17,19 @@ function AdminPanel() {
         admin.queue = JSON.parse(e.data);
     });
     this.source.addEventListener('cur', function(e) {
-        admin.nowPlaying = JSON.parse(e.data);
-        admin.setPlaying();
+        if (e == null || e == undefined || e.data == "<nil>") {
+            console.log("Nothing left in queue");
+            admin.nowPlaying = {};
+            $('#nowPlaying').text("Nothing left in queue");
+            return;
+        }
+        try {
+            admin.nowPlaying = JSON.parse(e.data);
+            admin.setPlaying();
+        } catch(error) {
+            console.log(e);
+            console.log(error);
+        }
     });
     this.source.addEventListener('active', function(e) {
         admin.active = JSON.parse(e.data).active;
@@ -90,8 +101,11 @@ function AdminPanel() {
       });
       remove_modal.style.display = "none";
     });
-    $('#sendReset').click(function() {jQuery.post('/admin/reset_queue');});
+    $('#sendReset').click(function() {
+        jQuery.post('/admin/reset_queue');
         reset_modal.style.display = "none";
+    });
+        
     $(document).keypress(function(e) {
         //Also advance on space bar
         if (e.which == 32) {

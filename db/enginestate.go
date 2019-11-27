@@ -27,6 +27,14 @@ func UpdateEngineState(env databaseConfig, newState models.State) error {
 	return nil
 }
 
+// ClearEngineState clears the state collection
+func ClearEngineState(env databaseConfig) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	_, err := getStateCollection(env).DeleteMany(ctx, bson.M{})
+	return err
+}
+
 func GetEngineState(env databaseConfig, sessionName string) (*models.State, error) {
 	var res models.State
 	col := getStateCollection(env)
