@@ -6,7 +6,6 @@ import (
 
 	"github.com/callummance/azunyan/config"
 	"github.com/callummance/azunyan/db"
-	"github.com/callummance/fuwafuwasearch/levenshteinmatrix"
 	broadcast "github.com/dustin/go-broadcast"
 
 	mgo "go.mongodb.org/mongo-driver/mongo"
@@ -18,9 +17,6 @@ type KaraokeManager struct {
 	Logger            *log.Logger
 	Config            config.Config
 	UpdateSubscribers broadcast.Broadcaster
-	TitleSearch       *levenshteinmatrix.LMatrixSearch
-	ArtistSearch      *levenshteinmatrix.LMatrixSearch
-	SourceSearch      *levenshteinmatrix.LMatrixSearch
 }
 
 // Initialize creates a new KaraokeManager object
@@ -30,21 +26,6 @@ func Initialize(configLoc string) KaraokeManager {
 	newManager.Config = config.LoadConfig(configLoc, newManager.Logger)
 	newManager.DbClient = db.InitDB(newManager.Config, newManager.Logger)
 	newManager.UpdateSubscribers = broadcast.NewBroadcaster(broadcastBufLen)
-	songSearchData := db.GetSongTAS(&newManager)
-	var ids []interface{}
-	titles := []string{}
-	artists := []string{}
-	sources := []string{}
-	for _, song := range songSearchData {
-		ids = append(ids, song.ID)
-		titles = append(titles, song.Title)
-		artists = append(artists, song.Artist)
-		sources = append(sources, song.Source)
-	}
-	newManager.TitleSearch = levenshteinmatrix.NewLMatrixSearch(titles, ids, false)
-	newManager.ArtistSearch = levenshteinmatrix.NewLMatrixSearch(artists, ids, false)
-	newManager.SourceSearch = levenshteinmatrix.NewLMatrixSearch(sources, ids, false)
-
 	return newManager
 }
 

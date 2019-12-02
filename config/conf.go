@@ -43,7 +43,7 @@ func LoadConfig(loc string, logger *log.Logger) Config {
 	}
 	err := godotenv.Load()
 	if err != nil {
-		logger.Printf("Could not load .env filei: %v", err)
+		logger.Printf("Could not load .env file: %v", err)
 	}
 	loadEVarIfExists(&res.DbConfig.DatabaseAddress, "dbaddr", logger)
 	loadEVarIfExists(&res.DbConfig.DatabaseCollectionName, "dbcollection", logger)
