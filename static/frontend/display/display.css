@@ -1,10 +1,40 @@
+/* - MASTER.RESET <<<--------*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, hr, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video, active, hover, selected {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: none;
+    text-decoration: none;
+}
+
+ol,ul {
+    list-style: none;
+}
+
+/* Our stylings */
 
 body {
     font-family: 'Roboto', sans-serif;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 
 #overlay {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: -0px;
@@ -27,17 +57,13 @@ body {
 #overlay #azunyangif {
     position: absolute;
     bottom: 0px;
-    right:0px;
+    right: 0px;
     z-index: -1;
     height: 100vh;
     width: 100vw;
 }
 
 #leftbar {
-    position: absolute;
-    top:0;
-    left:0;
-    width: 500px;
     padding: 0 10px;
     height: 100vh;
 }
@@ -56,11 +82,8 @@ body {
 }
 
 #mainbody{
-    position: absolute;
-    top:0;
-    left:520px;
-    right: 0;
-    height: 100%;
+    height: 100vh;
+    flex: 1;
     margin: 0;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     background: deepskyblue; /* For browsers that do not support gradients */
@@ -80,20 +103,15 @@ body {
     border-radius: 10px;
     margin:20px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    top:0;
-    left:0;
-    right:0;
     text-align: center;
     color: white;
-    height: 70%;
+    width: fit-content;
+    height: 70vh;
     background: #2b2b2b;
 }
 
 #nowplaying img {
   border-radius: 10px 10px 0 0;
-  position: relative;
-  top: 0;
-  left: 0;
   width: 100%;
   max-height: 60%;
 }
@@ -113,15 +131,18 @@ body {
     color:gray;
 }
 
+.songinfo {
+    width: 450px;
+    margin: auto;
+}
+
 #queue{
-    position: relative;
-    top:0;
-    right:0;
     height: 55%;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    margin: 10px 10px 10px 60px;
+    margin: 10px 30px 10px 30px;
     overflow: scroll;
 }
 
@@ -132,11 +153,11 @@ body {
 
 .queueitem {
     border-radius: 5px;
-    margin: 0 auto;
+    margin: 0 auto 10px;
     height:50px;
-    width: 90%;
+    width: 100%;
     background: #4e5664;
-    position: absolute;
+    position: relative;
 }
 
 .itemtitle {
@@ -168,14 +189,13 @@ body {
   overflow: scroll;
   position: relative;
   height: 25%;
-  margin: 10px 10px 10px 60px;
+  margin: 10px 30px 10px 30px;
   border-radius: 10px;
   background-color: lightgrey;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   padding: 5px 0;
-  justify-content: space-between;
 }
 
 #waiting::-webkit-scrollbar {
@@ -191,6 +211,7 @@ body {
   background-color: darkgrey;
   margin: 5px;
   padding-left: 10px;
+  flex: 1;
 }
 
 .partialSongDetails {
@@ -246,4 +267,97 @@ body {
     0%      {transform: translate(10%, 0);}
     50%     {transform: translate(-110%, 0);}
     100%    {transform: translate(10%, 0);}
+}
+
+/* For tablet screens */
+@media only screen and (max-width: 1366px) {
+    #nowplaying {
+      width: 450px;
+    }
+
+    .mainbody_title {
+        font-size: 2rem;
+    }
+
+    #nowplaying h1 {
+        font-size: 45pt;
+    }
+
+    #nowplaying h2 {
+        font-size: 35pt;
+    }
+
+    #leftbar {
+        width: fit-content;
+    }
+}
+
+/* For mobile screens */
+@media only screen and (max-width: 1024px) {
+    #nowplaying {
+      width: 100%;
+      margin: 0;
+      height: fit-content;
+    }
+
+    .mainbody_title {
+        font-size: 2rem;
+    }
+
+    #nowplaying h1 {
+        font-size: 45pt;
+    }
+
+    #nowplaying h2 {
+        font-size: 35pt;
+    }
+
+    #leftbar {
+        padding: 20px;
+        width: 100%;
+        height: unset;
+        min-width: 0;/* Fixes Firefox spacing issues with Flexbox */
+    }
+
+    #leftbar #disp_logo {
+        height: unset;
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .songinfo {
+        margin-bottom: 20px;
+        width: unset;
+        text-align: center;
+    }
+
+    #overlay #welcomeimage {
+        max-width: 100vw;
+        margin: 15px auto;
+        display: block;
+        padding: 0 20px;
+        box-sizing: border-box;
+    }
+
+    #overlay #azunyangif {
+        width: 200vw;
+    }
+
+    .itemtitle {
+        font-size: 1rem;
+        margin-top: 5px;
+    }
+
+    .itemsingers {
+        font-size: 1rem;
+    }
+
+    #mainbody {
+        min-width: 0; /* Fixes Firefox spacing issues with Flexbox */
+        height: unset;
+    }
+
+    #waiting {
+        height:unset;
+    }
 }

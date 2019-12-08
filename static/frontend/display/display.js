@@ -58,14 +58,6 @@ function DisplayClient() {
     this.source.addEventListener('message', function(e) {
         client.message.text = JSON.parse(e.data).message;
     });
-
-
-    $("#queue").scroll(function() {
-      client.queueHasScrolled = true;
-    })
-    setTimeout(function() {
-      handleScrollQueue($("#queue"), client);
-    }, 5000);
 }
 
 function handleScrollQueue(targetDiv, client) {
@@ -125,12 +117,11 @@ function makeQueueDivs(queue, prevQueueDivs, nowPlaying, targetDiv) {
     let newQueueDisplay = {};
     if (queue.complete != null) {
       queue.complete.map((q_entry, index) => {
-          let newPos = index * 55;
           itemid = q_entry.ids.join(".");
           if (prevQueueDivs.hasOwnProperty(itemid)) {
               //Thingy is already in queue
               prevQueueDivs[itemid].animate({
-                  top: newPos
+                  top: 0
               }, 1000);
               if (nowPlaying.ids != q_entry.ids) {
                   newQueueDisplay[itemid] = prevQueueDivs[itemid]
@@ -163,9 +154,8 @@ function makeQueueDivs(queue, prevQueueDivs, nowPlaying, targetDiv) {
               );
 
               //Sort out positioning
-              newdiv.css("top", $(window).height());
               newdiv.animate({
-                  top: newPos
+                  top: 0
               }, 1000);
               if (nowPlaying.ids != q_entry.ids) {
                   newQueueDisplay[itemid] = newdiv
