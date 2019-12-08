@@ -356,8 +356,4 @@ body {
         min-width: 0; /* Fixes Firefox spacing issues with Flexbox */
         height: unset;
     }
-
-    #waiting {
-        height:unset;
-    }
 }
