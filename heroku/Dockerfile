@@ -11,22 +11,22 @@ RUN apt update && apt -y install mongodb-org
 RUN apt -y install nodejs npm && npm config set unsafe-perm true && npm install -g yarn grunt-cli 
 
 #Get the latest version from git
-RUN go get -u github.com/dennisTsiang/azunyan
+RUN go get -u github.com/callummance/azunyan
 
 #Include files from host
-ADD . /go/src/github.com/dennisTsiang/azunyan
+ADD . /go/src/github.com/callummance/azunyan
 
 #Get golang deps
-RUN go get /go/src/github.com/dennisTsiang/azunyan
-RUN go install -i github.com/dennisTsiang/azunyan
+RUN go get /go/src/github.com/callummance/azunyan
+RUN go install -i github.com/callummance/azunyan
 
 #Change pwd so that static files work fine
-WORKDIR /go/src/github.com/dennisTsiang/azunyan/static/frontend
+WORKDIR /go/src/github.com/callummance/azunyan/static/frontend
 
 #Get frontend deps
 RUN yarn
 
-WORKDIR /go/src/github.com/dennisTsiang/azunyan/
+WORKDIR /go/src/github.com/callummance/azunyan/
 RUN chmod +x heroku/start.sh
 
 ENTRYPOINT ./heroku/start.sh
