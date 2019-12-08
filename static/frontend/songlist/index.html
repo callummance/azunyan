@@ -99,10 +99,27 @@
 <script>
     (function(){loadSongs()})();
 
+    function sortSongsComparison(a, b) {
+        if (a.artist < b.artist) {
+            return -1;
+        } else if (a.artist > b.artist) {
+            return 1;
+        } else {
+            if (a.title < b.title) {
+                return -1;
+            } else if (a.title > b.title) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
     function loadSongs() {
         $.getJSON('/api/getsongslist', function(data) {
+            songsSortedByArtistThenTitle = data.sort(sortSongsComparison)
             let rows = [];
-            $.each(data, function(i, obj) {
+            $.each(songsSortedByArtistThenTitle, function(i, obj) {
                 let titleDiv = document.createElement('div');
                 titleDiv.className = "cell";
                 titleDiv.append(obj.title);
