@@ -31,10 +31,6 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/callummance/fuwafuwasearch"
-
-[[constraint]]
-  branch = "master"
   name = "github.com/dustin/go-broadcast"
 
 [[constraint]]

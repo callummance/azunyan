@@ -6,6 +6,7 @@ RUN apk update && apk upgrade && apk add --no-cache bash git openssh gcc musl-de
 
 #Also install yarn to get js packages for frontend
 RUN apk add --no-cache nodejs npm && \
+    npm config set unsafe-perm true && \
     npm install -g yarn grunt-cli 
 
 #Get the latest version from git

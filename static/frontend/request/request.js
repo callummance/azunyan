@@ -58,6 +58,11 @@ jQuery(document).ready(function($){
   }
 
   function displayResults(results, setNo) {
+    if (results == null || results == undefined) {
+      resultsBox.empty();
+      return;
+    }
+    console.log(results);
     newResults = {};
     if (setNo < latestRecieved) { return; }
     results.forEach(function(newSong) {

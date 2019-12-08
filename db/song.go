@@ -14,10 +14,6 @@ import (
 	"github.com/callummance/azunyan/models"
 	"github.com/globalsign/mgo/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	// "github.com/globalsign/mgo"
-	// "github.com/globalsign/mgo/bson"
-	// "gopkg.in/mgo.v2"
-	// "gopkg.in/mgo.v2/bson"
 )
 
 func ImportJSONSongList(env databaseConfig, fileLoc string) {
@@ -79,28 +75,6 @@ func GetSongs(env databaseConfig) []models.Song {
 	return songs
 }
 
-func GetSongTAS(env databaseConfig) []models.SongSearchData {
-	var songs []models.SongSearchData
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	findOptions := options.Find()
-	findOptions.SetProjection(bson.M{
-		"title":  1,
-		"artist": 1,
-		"source": 1})
-	cursor, err := getCollection(env).Find(ctx, bson.M{}, findOptions)
-	// env.GetLog().Printf("%+v\n", songs)
-	if err != nil {
-		env.GetLog().Printf("Could not fetch songlist due to error %q", err)
-	}
-	songs, err = resultsToSongSearchDataArray(cursor)
-	if err != nil {
-		env.GetLog().Printf("Failure whilst converting results to an array: %v", err)
-		return songs
-	}
-	return songs
-}
-
 func GetSongsByIDs(env databaseConfig, songIDs []primitive.ObjectID) ([]models.Song, error) {
 	findOptions := options.Find()
 	findOptions.SetProjection(bson.M{
@@ -133,6 +107,7 @@ func GetSongsByIDs(env databaseConfig, songIDs []primitive.ObjectID) ([]models.S
 		env.GetLog().Printf("Failure whilst converting results to an array: %v", err)
 		return nil, err
 	}
+	env.GetLog().Printf("getCollection from MongoDB request return %d documents", len(songs))
 	return songs, err
 }
 
@@ -189,6 +164,26 @@ func GetSongCoverByID(env databaseConfig, sid primitive.ObjectID) ([]byte, error
 		singleResult.Decode(&res)
 		return res.Cover, nil
 	}
+}
+
+// GetSongsByTextSearch searches Mongo database for songs by text using built-in Mongo searching.
+// Requires an index to be created on the title and artist fields
+func GetSongsByTextSearch(env databaseConfig, text string) ([]models.Song, error) {
+	collection := getCollection(env)
+	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
+	defer cancel()
+	cursor, err := collection.Find(ctx, bson.M{"$text": bson.M{"$search": text}})
+	if err != nil {
+		env.GetLog().Printf("Failed to search database for songs for reason '%s'", err)
+		return nil, err
+	}
+	songs, err := resultsToSongsArray(cursor)
+	if err != nil {
+		env.GetLog().Printf("Failure whilst converting results to an array: %v", err)
+		return nil, err
+	}
+	env.GetLog().Printf("getCollection from MongoDB request return %d documents", len(songs))
+	return songs, err
 }
 
 func getCollection(env databaseConfig) *mongo.Collection {
