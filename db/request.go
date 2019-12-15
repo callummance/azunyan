@@ -181,13 +181,13 @@ func GetPreviousRequestsBySinger(env databaseConfig, singer string, submitted ti
 	return res
 }
 
-func GetQueued(env databaseConfig) []models.Request {
+func GetLiveRequests(env databaseConfig) []models.Request {
 	var res []models.Request
 	col := getReqCollection(env)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	findOptions := options.Find()
-	findOptions.SetSort("-priority")
+	findOptions.SetSort(bson.M{"time": 1})
 	cursor, err := col.Find(ctx, bson.M{
 		"playedtime": bson.M{"$exists": false},
 	}, findOptions)
@@ -208,7 +208,7 @@ func SetRequestPlayed(env databaseConfig, reqId primitive.ObjectID, playedTime t
 	defer cancel()
 	_, err := col.UpdateOne(ctx, bson.M{"_id": reqId}, bson.M{"$set": bson.M{"playedtime": playedTime}})
 	if err != nil {
-		env.GetLog().Printf("Couldn't update priority due to error %q", err)
+		env.GetLog().Printf("Couldn't update playedtime due to error %q", err)
 	}
 	return err
 }

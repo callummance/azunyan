@@ -16,7 +16,7 @@ func AddRequest(m *KaraokeManager, singer string, song string) error {
 	objID, err := primitive.ObjectIDFromHex(song)
 	if err != nil {
 		m.Logger.Printf("Could not insert request for song %s due to error %s", song, err)
-		err = FetchAndUpdateListenersQueue(m)
+		err = FetchAndUpdateListenersQueue(m, 0)
 		return err
 	}
 	req := models.Request{
@@ -31,7 +31,7 @@ func AddRequest(m *KaraokeManager, singer string, song string) error {
 	if err != nil {
 		m.Logger.Printf("Could not insert request for song %s due to error %s", song, err)
 	}
-	err = FetchAndUpdateListenersQueue(m)
+	err = FetchAndUpdateListenersQueue(m, 0)
 	return err
 }
 
@@ -41,7 +41,7 @@ func RemoveSinger(m *KaraokeManager, singer string) error {
 	if err != nil {
 		return err
 	}
-	err = FetchAndUpdateListenersQueue(m)
+	err = FetchAndUpdateListenersQueue(m, 0)
 	return err
 }
 
@@ -51,7 +51,7 @@ func Reset(m *KaraokeManager) error {
 	if err != nil {
 		return err
 	}
-	err = FetchAndUpdateListenersQueue(m)
+	err = FetchAndUpdateListenersQueue(m, 0)
 	UpdateListenersCur(m, nil)
 	return err
 }
@@ -107,4 +107,21 @@ func SetReqActive(m *KaraokeManager, newActiveState bool) error {
 	} else {
 		return nil
 	}
+}
+
+//ChangeNumberOfSingers updates the number of singers required for each request.
+func ChangeNumberOfSingers(m *KaraokeManager, noSingers int) error {
+	state, err := db.GetEngineState(m, m.Config.KaraokeConfig.SessionName)
+	if err != nil {
+		m.Logger.Printf("Failed to get session data due to error %q", err)
+	}
+	state.NoSingers = noSingers
+	err = db.UpdateEngineState(m, *state)
+	if err != nil {
+		m.Logger.Printf("Failed to update number of singers due to error %q", err)
+		return err
+	}
+	UpdateNumberSingers(m, noSingers)
+	FetchAndUpdateListenersQueue(m, 1)
+	return nil
 }

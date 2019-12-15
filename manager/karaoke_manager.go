@@ -11,7 +11,7 @@ import (
 	mgo "go.mongodb.org/mongo-driver/mongo"
 )
 
-// KaraokeManager object
+// KaraokeManager object implements databaseConfig interface
 type KaraokeManager struct {
 	DbClient          *mgo.Client
 	Logger            *log.Logger

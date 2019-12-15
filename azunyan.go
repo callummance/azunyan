@@ -25,6 +25,7 @@ func main() {
 	env := manager.Initialize(confFileLoc)
 
 	db.InitialiseState(&env)
+	db.ClearUpcomingSongs(&env)
 
 	//Start listening for web requests
 	router := webserver.Route(env)
