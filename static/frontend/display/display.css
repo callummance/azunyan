@@ -154,7 +154,6 @@ body {
 .queueitem {
     border-radius: 5px;
     margin: 0 auto 10px;
-    height:50px;
     width: 100%;
     background: #4e5664;
     position: relative;
@@ -211,7 +210,6 @@ body {
   background-color: darkgrey;
   margin: 5px;
   padding-left: 10px;
-  flex: 1;
 }
 
 .partialSongDetails {
@@ -294,10 +292,29 @@ body {
 
 /* For mobile screens */
 @media only screen and (max-width: 1024px) {
+
+    #queue::-webkit-scrollbar {
+        display: block;
+    }
+
+    #queue::-webkit-scrollbar:vertical {
+        width: 10px;
+    }
+      
+    #queue::-webkit-scrollbar-thumb {
+        border-radius: 5px;
+        background-color: rgba(0,0,0,.5);
+        -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+    }
+
+    #queue {
+        height: 550px;
+    }
+
     #nowplaying {
       width: 100%;
       margin: 0;
-      height: fit-content;
+      height: auto;
     }
 
     .mainbody_title {
@@ -354,6 +371,28 @@ body {
 
     #mainbody {
         min-width: 0; /* Fixes Firefox spacing issues with Flexbox */
-        height: unset;
+        height: max-content
+    }
+
+    #waiting {
+        height: 340px;
+    }
+
+    #waiting::-webkit-scrollbar {
+        display: block;
+    }
+
+    #waiting::-webkit-scrollbar:horizontal {
+        height: 10px;
+    }
+      
+    #waiting::-webkit-scrollbar-thumb {
+        border-radius: 5px;
+        background-color: rgba(0,0,0,.5);
+        -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+    }
+
+    ::-webkit-scrollbar-corner {
+        background-color: transparent;
     }
 }
