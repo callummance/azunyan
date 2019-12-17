@@ -105,6 +105,10 @@ function AdminPanel() {
         jQuery.post('/admin/reset_queue');
         reset_modal.style.display = "none";
     });
+    $("input[name='singersInput'").change(() => {
+        let value = $("input[name='singersInput'").val();
+        jQuery.post('/admin/singers/'+value);
+    });
         
     $(document).keypress(function(e) {
         //Also advance on space bar

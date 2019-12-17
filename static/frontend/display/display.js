@@ -43,8 +43,14 @@ function DisplayClient() {
     });
     //Listen for SSEs
     this.source.addEventListener('queue',  function(e) {
-        client.queue = JSON.parse(e.data);
+        data = JSON.parse(e.data)
+        mode = data.Mode;
+        client.queue = data.Queues;
         client.queuedisplay = makeQueueDivs(client.queue, client.queuedisplay, client.cur, $('#queue'));
+        if (mode == 1) {
+            $('#waiting').empty()
+            this.partialqueuedisplay = {};
+        }
         client.partialqueuedisplay = makePartialQueueDivs(client.queue, client.partialqueuedisplay, client.cur, $('#waiting'), client.noSingers)
     });
     this.source.addEventListener('cur', function(e) {
@@ -57,6 +63,9 @@ function DisplayClient() {
     });
     this.source.addEventListener('message', function(e) {
         client.message.text = JSON.parse(e.data).message;
+    });
+    this.source.addEventListener('singers', function(e) {
+        client.noSingers = parseInt(e.data);
     });
 }
 
@@ -213,7 +222,7 @@ function makePartialQueueDivs(queue, prevQueueDivs, nowPlaying, targetDiv, noSin
           } else {
             targetDiv.append(prevQueueDivs[itemid])
             if (nowPlaying.ids != q_entry.ids) {
-                newQueueDisplay[q_entry.ids] = prevQueueDivs[itemid]
+                newQueueDisplay[itemid] = prevQueueDivs[itemid]
             }
           }
 

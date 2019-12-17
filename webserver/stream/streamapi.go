@@ -47,9 +47,15 @@ func sendInitial(m *manager.KaraokeManager, listener chan interface{}) {
 
 	listener <- manager.BroadcastData{
 		Name: "queue",
-		Content: map[string][]models.QueueItem{
-			"complete": completeQueue,
-			"partial":  partialQueue,
+		Content: struct {
+			Mode   int
+			Queues map[string][]models.QueueItem
+		}{
+			0,
+			map[string][]models.QueueItem{
+				"complete": completeQueue,
+				"partial":  partialQueue,
+			},
 		},
 	}
 	listener <- manager.BroadcastData{

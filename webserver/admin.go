@@ -1,6 +1,8 @@
 package webserver
 
 import (
+	"strconv"
+
 	"github.com/callummance/azunyan/manager"
 	"github.com/gin-gonic/gin"
 )
@@ -11,6 +13,7 @@ func RouteAdmin(group *gin.RouterGroup) {
 	group.POST("/advance", advanceEndpoint)
 	group.POST("/remove_singer", removeSingerEndpoint)
 	group.POST("/reset_queue", resetQueueEndpoint)
+	group.POST("/singers/:number", changeNumberOfSingersEndpoint)
 }
 
 func resetQueueEndpoint(c *gin.Context) {
@@ -95,5 +98,17 @@ func advanceEndpoint(c *gin.Context) {
 	}
 
 	manager.PopNextSong(env)
+	c.Status(201)
+}
+
+func changeNumberOfSingersEndpoint(c *gin.Context) {
+	env, ok := c.MustGet("manager").(*manager.KaraokeManager)
+	if !ok {
+		env.Logger.Printf("Failed to grab environment from Context variable")
+		c.String(500, "{\"message\": \"internal failure\"")
+	}
+	singersString := c.Param("number")
+	singers, _ := strconv.Atoi(singersString)
+	manager.ChangeNumberOfSingers(env, singers)
 	c.Status(201)
 }

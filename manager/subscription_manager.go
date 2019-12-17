@@ -32,23 +32,35 @@ func (m *KaraokeManager) SendBroadcast(bc BroadcastData) {
 	m.UpdateSubscribers.Submit(bc)
 }
 
-func FetchAndUpdateListenersQueue(m *KaraokeManager) error {
+/*FetchAndUpdateListenersQueue fetches the complete and partialqueues and
+broadcasts them to the listeners.
+mode specifies the mode that the listener should use:
+0 - Default, reuse the partial divs
+1 - Clears the divs in the partialQueue and recreates new divs
+*/
+func FetchAndUpdateListenersQueue(m *KaraokeManager, mode int) error {
 	completeQueue, partialQueue, err := GetQueue(m)
 	if err != nil {
 		m.Logger.Printf("Failed to get song queue state due to error %v", err)
 		return err
 	}
-	UpdateListenersQueue(m, completeQueue, partialQueue)
+	UpdateListenersQueue(m, completeQueue, partialQueue, mode)
 	return nil
 }
 
-func UpdateListenersQueue(m *KaraokeManager, complete []models.QueueItem, partial []models.QueueItem) {
+func UpdateListenersQueue(m *KaraokeManager, complete []models.QueueItem, partial []models.QueueItem, mode int) {
 	//Send updates
 	m.SendBroadcast(BroadcastData{
 		Name: "queue",
-		Content: map[string][]models.QueueItem{
-			"complete": complete,
-			"partial":  partial,
+		Content: struct {
+			Mode   int
+			Queues map[string][]models.QueueItem
+		}{
+			mode,
+			map[string][]models.QueueItem{
+				"complete": complete,
+				"partial":  partial,
+			},
 		},
 	})
 }
@@ -70,4 +82,12 @@ func FetchAndUpdateListenersCur(m *KaraokeManager) error {
 	cur := state.NowPlaying
 	UpdateListenersCur(m, cur)
 	return nil
+}
+
+// Broadcasts an update to the "singers" listeners
+func UpdateNumberSingers(m *KaraokeManager, singers int) {
+	m.SendBroadcast(BroadcastData{
+		Name:    "singers",
+		Content: singers,
+	})
 }
