@@ -14,6 +14,7 @@ func RouteAdmin(group *gin.RouterGroup) {
 	group.POST("/remove_singer", removeSingerEndpoint)
 	group.POST("/reset_queue", resetQueueEndpoint)
 	group.POST("/singers/:number", changeNumberOfSingersEndpoint)
+	group.POST("/allowdupes/:bool", allowDuplicatesEndpoint)
 }
 
 func resetQueueEndpoint(c *gin.Context) {
@@ -110,5 +111,17 @@ func changeNumberOfSingersEndpoint(c *gin.Context) {
 	singersString := c.Param("number")
 	singers, _ := strconv.Atoi(singersString)
 	manager.ChangeNumberOfSingers(env, singers)
+	c.Status(201)
+}
+
+func allowDuplicatesEndpoint(c *gin.Context) {
+	env, ok := c.MustGet("manager").(*manager.KaraokeManager)
+	if !ok {
+		env.Logger.Printf("Failed to grab environment from Context variable")
+		c.String(500, "{\"message\": \"internal failure\"")
+	}
+	allowDupesString := c.Param("bool")
+	allowDupes, _ := strconv.ParseBool(allowDupesString)
+	manager.ChangeAllowDuplication(env, allowDupes)
 	c.Status(201)
 }

@@ -11,14 +11,6 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:347f6f564daa892beb7af91931fd672dafc5562d1195fc18f7fe54b0a29bc871"
-  name = "github.com/callummance/fuwafuwasearch"
-  packages = ["levenshteinmatrix"]
-  pruneopts = "UT"
-  revision = "df810dd2259ef1d0c75e3e38f37db238ed7f68ad"
-
-[[projects]]
-  branch = "master"
   digest = "1:09caacaac48b388502b23d8afbc58003d0e3ec8d4faf78a866d4cde554d946f7"
   name = "github.com/dustin/go-broadcast"
   packages = ["."]
@@ -88,7 +80,7 @@
   version = "v1.3.0"
 
 [[projects]]
-  digest = "1:be97e109f627d3ba8edfef50c9c74f0d0c17cbe3a2e924a8985e4804a894f282"
+  digest = "1:9a855f51d5eaf25dafc30cf0ad5844d5fb6aacec4ceb98a04ed2964562edbc0c"
   name = "github.com/json-iterator/go"
   packages = ["."]
   pruneopts = "UT"
@@ -223,7 +215,6 @@
   analyzer-version = 1
   input-imports = [
     "github.com/BurntSushi/toml",
-    "github.com/callummance/fuwafuwasearch/levenshteinmatrix",
     "github.com/dustin/go-broadcast",
     "github.com/gin-gonic/gin",
     "github.com/globalsign/mgo/bson",

@@ -1,59 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
 
-    <link rel = "stylesheet" type = "text/css" href = "./adminstyle.css">
+    <link rel="stylesheet" type="text/css" href="./adminstyle.css">
 
     <title>Mugi - Admin</title>
 </head>
+
 <body>
 
-<h1 id = "nowPlaying">Now Playing</h1>
-<div id = "controls">
-    <button id = "advance" class = "settings">Advance</button>
-    <br>
-    <button id = "activate" class = "settings">Activate</button>
-    <button id = "deactivate" class = "settings">Deactivate</button>
-    <br>
-    <button id = "activater" class = "settings">Activate Requests</button>
-    <button id = "deactivater" class = "settings">Deactivate Requests</button>
-    <br><br>
-    <button id = "removeActivate" class = "settings">Remove Singer</button>
-    <br><br>
-    <button id = "resetActivate" class = "settings">Reset Queue (DANGER)</button>
-    <div class = "settings__input">
-        Number of singers (1-4): <input type="number" name="singersInput" min="1" max="4">
-    </div>
-</div>
-
-
-
-<!-- Singer Removal Modal -->
-<div id="removeModal" class="modal">
-    <!-- Modal content -->
-    <div class="modal-content">
-        <span id="close_remove" class="close">&times;</span>
-        <div id = removeBox>
-            <input name = "Singer Name" id = "removeName" class = "textBox"></input><br>
-            <button id = "sendDelete" class = "settings">Submit</button>
+    <h1 id="nowPlaying">Now Playing</h1>
+    <div id="controls">
+        <button id="advance" class="settings">Advance</button>
+        <br>
+        <button id="activate" class="settings">Activate</button>
+        <button id="deactivate" class="settings">Deactivate</button>
+        <br>
+        <button id="activater" class="settings">Activate Requests</button>
+        <button id="deactivater" class="settings">Deactivate Requests</button>
+        <br><br>
+        <button id="removeActivate" class="settings">Remove Singer</button>
+        <br><br>
+        <button id="resetActivate" class="settings">Reset Queue (DANGER)</button>
+        <div class="settings__input">
+            Number of singers (1-4): <input type="number" name="singersInput" min="1" max="4">
+        </div>
+        <div class="settings__input">
+            Allow duplicate songs
+            <label class="switch">
+                <input type="checkbox" name="allowDuplicates" checked>
+                <span class="slider round"></span>
+            </label>
         </div>
     </div>
-</div>
 
-<!-- Reset Modal -->
-<div id="resetModal" class="modal">
-    <!-- Modal content -->
-    <div class="modal-content">
-        <span id="close_reset" class="close">&times;</span>
-        <div id = resetBox>
-          <p>Are you really sure you want to do this?</p>
-          <button id = "sendReset" class = "settings">Do it.</button>
+
+
+    <!-- Singer Removal Modal -->
+    <div id="removeModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span id="close_remove" class="close">&times;</span>
+            <div id=removeBox>
+                <input name="Singer Name" id="removeName" class="textBox"></input><br>
+                <button id="sendDelete" class="settings">Submit</button>
+            </div>
         </div>
     </div>
-</div>
 
-<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<script src="./admin.js"></script>
+    <!-- Reset Modal -->
+    <div id="resetModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span id="close_reset" class="close">&times;</span>
+            <div id=resetBox>
+                <p>Are you really sure you want to do this?</p>
+                <button id="sendReset" class="settings">Do it.</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="./admin.js"></script>
 </body>
+
 </html>
