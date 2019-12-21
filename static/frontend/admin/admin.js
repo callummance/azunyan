@@ -1,4 +1,4 @@
-(function() {
+(function () {
     let panel = new AdminPanel();
 })();
 
@@ -13,10 +13,10 @@ function AdminPanel() {
 
     //Load and subscribe to event source
     this.source = new window.EventSource('/api/queuestream');
-    this.source.addEventListener('queue', function(e) {
+    this.source.addEventListener('queue', function (e) {
         admin.queue = JSON.parse(e.data);
     });
-    this.source.addEventListener('cur', function(e) {
+    this.source.addEventListener('cur', function (e) {
         if (e == null || e == undefined || e.data == "<nil>") {
             console.log("Nothing left in queue");
             admin.nowPlaying = {};
@@ -26,18 +26,18 @@ function AdminPanel() {
         try {
             admin.nowPlaying = JSON.parse(e.data);
             admin.setPlaying();
-        } catch(error) {
+        } catch (error) {
             console.log(e);
             console.log(error);
         }
     });
-    this.source.addEventListener('active', function(e) {
+    this.source.addEventListener('active', function (e) {
         admin.active = JSON.parse(e.data).active;
     });
 
 
     //Functions for updating display elements
-    this.setPlaying = function() {
+    this.setPlaying = function () {
         $('#nowPlaying').text(admin.nowPlaying.title + " - " + admin.nowPlaying.artist);
     };
 
@@ -46,9 +46,9 @@ function AdminPanel() {
     let remove_btn = document.getElementById("removeActivate");
     let remove_span = document.getElementById("close_remove");
 
-    remove_btn.onclick = function() {remove_modal.style.display = "block";};
-    remove_span.onclick = function() {remove_modal.style.display = "none";};
-    window.onclick = function(event) {
+    remove_btn.onclick = function () { remove_modal.style.display = "block"; };
+    remove_span.onclick = function () { remove_modal.style.display = "none"; };
+    window.onclick = function (event) {
         if (event.target == remove_modal) {
             remove_modal.style.display = "none";
         }
@@ -59,72 +59,85 @@ function AdminPanel() {
     let reset_btn = document.getElementById("resetActivate");
     let reset_span = document.getElementById("close_reset");
 
-    reset_btn.onclick = function() {reset_modal.style.display = "block";};
-    reset_span.onclick = function() {reset_modal.style.display = "none";};
-    window.onclick = function(event) {
+    reset_btn.onclick = function () { reset_modal.style.display = "block"; };
+    reset_span.onclick = function () { reset_modal.style.display = "none"; };
+    window.onclick = function (event) {
         if (event.target == reset_modal) {
             reset_modal.style.display = "none";
         }
     };
 
     //Listen for button presses
-    $('#advance').click(function() {jQuery.post('/admin/advance');});
-    $('#activate').click(function() {jQuery.ajax({
-        type: "POST",
-        url: '/admin/active',
-        data: JSON.stringify({"active": true}),
-        contentType: 'application/json'
-    });});
-    $('#deactivate').click(function() {jQuery.ajax({
-        type: "POST",
-        url: '/admin/active',
-        data: JSON.stringify({"active": false}),
-        contentType: 'application/json'
-    });});
-    $('#activater').click(function() {jQuery.ajax({
-        type: "POST",
-        url: '/admin/req_active',
-        data: JSON.stringify({"active": true}),
-        contentType: 'application/json'
-    });});
-    $('#deactivater').click(function() {jQuery.ajax({
-        type: "POST",
-        url: '/admin/req_active',
-        data: JSON.stringify({"active": false}),
-        contentType: 'application/json'
-    });});
-    $('#sendDelete').click(function() {jQuery.ajax({
-          type: "POST",
-          url: '/admin/remove_singer',
-          data: JSON.stringify({"singer": $('#removeName').val()}),
-          contentType: 'application/json'
-      });
-      remove_modal.style.display = "none";
+    $('#advance').click(function () { jQuery.post('/admin/advance'); });
+    $('#activate').click(function () {
+        jQuery.ajax({
+            type: "POST",
+            url: '/admin/active',
+            data: JSON.stringify({ "active": true }),
+            contentType: 'application/json'
+        });
     });
-    $('#sendReset').click(function() {
+    $('#deactivate').click(function () {
+        jQuery.ajax({
+            type: "POST",
+            url: '/admin/active',
+            data: JSON.stringify({ "active": false }),
+            contentType: 'application/json'
+        });
+    });
+    $('#activater').click(function () {
+        jQuery.ajax({
+            type: "POST",
+            url: '/admin/req_active',
+            data: JSON.stringify({ "active": true }),
+            contentType: 'application/json'
+        });
+    });
+    $('#deactivater').click(function () {
+        jQuery.ajax({
+            type: "POST",
+            url: '/admin/req_active',
+            data: JSON.stringify({ "active": false }),
+            contentType: 'application/json'
+        });
+    });
+    $('#sendDelete').click(function () {
+        jQuery.ajax({
+            type: "POST",
+            url: '/admin/remove_singer',
+            data: JSON.stringify({ "singer": $('#removeName').val() }),
+            contentType: 'application/json'
+        });
+        remove_modal.style.display = "none";
+    });
+    $('#sendReset').click(function () {
         jQuery.post('/admin/reset_queue');
         reset_modal.style.display = "none";
     });
-    $("input[name='singersInput'").change(() => {
+    $("input[name='singersInput']").change(() => {
         let value = $("input[name='singersInput'").val();
-        jQuery.post('/admin/singers/'+value);
+        jQuery.post('/admin/singers/' + value);
     });
-        
-    $(document).keypress(function(e) {
+    $("input[name='allowDuplicates']").change(() => {
+        let value = $("input[name='allowDuplicates']").prop("checked");
+        jQuery.post('/admin/allowdupes/' + value);
+    });
+
+    $(document).keypress(function (e) {
         //Also advance on space bar
         if (e.which == 32) {
-          let remove_modal = document.getElementById('removeModal');
-          if (remove_modal.style.display == "none") {
-            jQuery.post('/admin/advance');
-          }
+            let remove_modal = document.getElementById('removeModal');
+            if (remove_modal.style.display == "none") {
+                jQuery.post('/admin/advance');
+            }
         }
     });
 }
 
 function loadQueue(id) {
-    $.getJSON('/admin/get_queue', function(data) {
+    $.getJSON('/admin/get_queue', function (data) {
         let rows = [];
-        $.each(data, function(i, obj) {
+        $.each(data, function (i, obj) {
             let titleDiv = document.createElement('div');
             titleDiv.className = "cell";
             titleDiv.append(obj.title);
@@ -141,7 +154,7 @@ function loadQueue(id) {
             let modBox = document.createElement('input');
             modBox.type = "number";
             modBox.value = obj.mod;
-            modBox.onblur = function() {
+            modBox.onblur = function () {
                 let id = obj.queuePos;
                 let newVal = modBox.value;
                 jQuery.ajax({
@@ -160,12 +173,12 @@ function loadQueue(id) {
             let delDiv = document.createElement('div');
             let delBut = document.createElement('button');
             delBut.innerText = "Remove";
-            delBut.onclick = function() {
+            delBut.onclick = function () {
                 let id = obj.queuePos;
                 jQuery.ajax({
                     type: "DELETE",
                     url: '/admin/remove_queue',
-                    data: JSON.stringify({id: id}),
+                    data: JSON.stringify({ id: id }),
                     contentType: 'application/json'
                 });
             };
@@ -206,7 +219,7 @@ function loadQueue(id) {
                     Del
                 </div>
             </div>`;
-        $.each(rows, function(i, obj) {
+        $.each(rows, function (i, obj) {
             target.appendChild(obj);
         });
     });
