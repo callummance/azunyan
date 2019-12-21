@@ -125,3 +125,19 @@ func ChangeNumberOfSingers(m *KaraokeManager, noSingers int) error {
 	FetchAndUpdateListenersQueue(m, 1)
 	return nil
 }
+
+//ChangeAllowDuplication changes whether duplicate songs should be allowed.
+func ChangeAllowDuplication(m *KaraokeManager, allowdupes bool) error {
+	state, err := db.GetEngineState(m, m.Config.KaraokeConfig.SessionName)
+	if err != nil {
+		m.Logger.Printf("Failed to get session data due to error %q", err)
+	}
+	state.AllowingDupes = allowdupes
+	err = db.UpdateEngineState(m, *state)
+	if err != nil {
+		m.Logger.Printf("Failed to update duplicate rule due to error %q", err)
+		return err
+	}
+	FetchAndUpdateListenersQueue(m, 1)
+	return nil
+}
