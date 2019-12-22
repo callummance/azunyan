@@ -35,6 +35,9 @@ function AdminPanel() {
         admin.active = JSON.parse(e.data).active;
     });
 
+    $.get('/admin/ipaddress', null, (ipaddress) => {
+        $('#serverDetails__ip-address').text(ipaddress);
+    });
 
     //Functions for updating display elements
     this.setPlaying = function () {
