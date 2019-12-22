@@ -1,6 +1,7 @@
 package webserver
 
 import (
+	"net"
 	"strconv"
 
 	"github.com/callummance/azunyan/manager"
@@ -15,6 +16,7 @@ func RouteAdmin(group *gin.RouterGroup) {
 	group.POST("/reset_queue", resetQueueEndpoint)
 	group.POST("/singers/:number", changeNumberOfSingersEndpoint)
 	group.POST("/allowdupes/:bool", allowDuplicatesEndpoint)
+	group.GET("/ipaddress", ipAddressEndpoint)
 }
 
 func resetQueueEndpoint(c *gin.Context) {
@@ -124,4 +126,25 @@ func allowDuplicatesEndpoint(c *gin.Context) {
 	allowDupes, _ := strconv.ParseBool(allowDupesString)
 	manager.ChangeAllowDuplication(env, allowDupes)
 	c.Status(201)
+}
+
+func ipAddressEndpoint(c *gin.Context) {
+	env, ok := c.MustGet("manager").(*manager.KaraokeManager)
+	if !ok {
+		env.Logger.Printf("Failed to grab environment from Context variable")
+		c.String(500, "{\"message\": \"internal failure\"")
+	}
+	c.String(200, getIPAddress(env))
+}
+
+func getIPAddress(env *manager.KaraokeManager) string {
+	conn, err := net.Dial("udp", "8.8.8.8:80")
+	if err != nil {
+		env.Logger.Printf("%q", err)
+		return ""
+	}
+	defer conn.Close()
+
+	localAddr := conn.LocalAddr().(*net.UDPAddr)
+	return localAddr.IP.String()
 }
