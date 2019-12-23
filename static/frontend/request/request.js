@@ -1,27 +1,27 @@
-jQuery(document).ready(function($){
+jQuery(document).ready(function ($) {
   var searchBox = $("#songSelect");
-  var resultsBox = $("#resultsbox");
+  var resultsList = $("#results");
   var searchResults = {};
   var latestResultSet = 0;
   var latestRecieved = 0;
 
   var searchTimeoutReady = true;
 
-  var lazyInstance = $("#resultsBox .albumimage").Lazy({
+  var lazyInstance = $("#results .albumimage").Lazy({
     effect: "fadeIn",
     visibleOnly: true,
     chainable: false,
     autoDestroy: false,
     threshold: 0,
-    appendScroll: $("#resultsbox"),
-    beforeLoad: function(elem, resp) {
+    appendScroll: $("#results"),
+    beforeLoad: function (elem, resp) {
       console.log("Now loading element");
       console.log(elem);
     },
   });
 
   // Set an onclick handler on the results box
-  $("#resultsbox").on("click","article", function(event) {
+  $("#results").on("click", "article", function (event) {
     selectedSong(event.currentTarget.id);
   });
 
@@ -31,8 +31,8 @@ jQuery(document).ready(function($){
     };
   }
 
-  (function() {
-    searchBox.on("keydown", function(e) {
+  (function () {
+    searchBox.on("keydown", function (e) {
       if (e.which == 13) {
         requestSearch(searchBox.val())
       }
@@ -46,12 +46,12 @@ jQuery(document).ready(function($){
       searchTimeoutReady = false;
       $.getJSON("/api/searchsongs", {
         q: searchStr
-      }, function(searchResults) {
+      }, function (searchResults) {
         //Update results box
         displayResults(searchResults, latestResultSet++);
       });
       //Set timer until next allowed call in 0.5s
-      setTimeout(function() {
+      setTimeout(function () {
         searchTimeoutReady = true
       }, 500);
     }
@@ -59,13 +59,15 @@ jQuery(document).ready(function($){
 
   function displayResults(results, setNo) {
     if (results == null || results == undefined) {
-      resultsBox.empty();
+      resultsList.empty();
+      $("#resultsbox__no-results").css("display", "block");
       return;
     }
     console.log(results);
     newResults = {};
+    $("#resultsbox__no-results").css("display", "none");
     if (setNo < latestRecieved) { return; }
-    results.forEach(function(newSong) {
+    results.forEach(function (newSong) {
       if (newSong.ID in searchResults) {
         //We already have that song
         newResults[newSong.ID] = searchResults[newSong.ID];
@@ -79,9 +81,9 @@ jQuery(document).ready(function($){
         newResults[newSong.ID] = songCard;
       }
     });
-    resultsBox.empty()
-    results.forEach(function(result) {
-      resultsBox.append(newResults[result.ID]);
+    resultsList.empty()
+    results.forEach(function (result) {
+      resultsList.append(newResults[result.ID]);
     });
     searchResults = newResults;
     latestRecieved = setNo;
@@ -121,7 +123,7 @@ jQuery(document).ready(function($){
     setLazy(imgobj);
   }
 
-  function selectedSong(id){
+  function selectedSong(id) {
     let card = searchResults[id].clone(false, false);
     card.addClass("pulse");
     card = $("<div>").append(card);
@@ -144,18 +146,18 @@ jQuery(document).ready(function($){
     })
 
     modal.setContent(card.append(content).html());
-    modal.addFooterBtn("Let's Go!", "tingle-btn tingle-btn--primary tingle-btn--pull-right", function() {
+    modal.addFooterBtn("Let's Go!", "tingle-btn tingle-btn--primary tingle-btn--pull-right", function () {
       name = $("#nameinput").val();
       if (name.trim() == "") {
         alert("Please enter a name.\n\nThis version of the karaoke queue uses names to match singers up, as well as to prevent the queue being clogged with requests from people that have left.\nThank you for your understanding.");
       } else {
         modal.close()
-        submitSelection(id, name, function() {
+        submitSelection(id, name, function () {
         });
       }
       console.log(name + " has requested " + id);
     })
-    modal.addFooterBtn("Go back", "tingle-btn tingle-btn--danger tingle-btn--pull-right", function() {
+    modal.addFooterBtn("Go back", "tingle-btn tingle-btn--danger tingle-btn--pull-right", function () {
       modal.close();
     });
     modal.open();
@@ -172,13 +174,13 @@ jQuery(document).ready(function($){
       data: JSON.stringify(requestObj),
       contentType: "application/json; charset=utf-8",
     })
-    .done(function(data, textStatus) {
-      alert("Request Submitted!")
-      success();
-    })
-    .fail(function(data, textStatus, errorThrown) {
-      alert("Something went wrong: " + errorThrown)
-    })
+      .done(function (data, textStatus) {
+        alert("Request Submitted!")
+        success();
+      })
+      .fail(function (data, textStatus, errorThrown) {
+        alert("Something went wrong: " + errorThrown)
+      })
   }
 
   function getFlagName(lang) {
@@ -215,22 +217,22 @@ jQuery(document).ready(function($){
     return res;
   }
 
-  $.fn.textfill = function(maxFontSize) {
+  $.fn.textfill = function (maxFontSize) {
     maxFontSize = parseInt(maxFontSize, 10);
-    return this.each(function(){
+    return this.each(function () {
       var ourText = $("span", this),
         parent = ourText.parent(),
         maxHeight = parent.height(),
         maxWidth = parent.width(),
         fontSize = parseInt(ourText.css("fontSize"), 10),
-        multiplier = maxWidth/ourText.width(),
-        newSize = (fontSize*(multiplier-0.1));
+        multiplier = maxWidth / ourText.width(),
+        newSize = (fontSize * (multiplier - 0.1));
       ourText.css(
         "fontSize",
         (maxFontSize > 0 && newSize > maxFontSize) ?
           maxFontSize :
           newSize
-        );
+      );
     });
   };
 
