@@ -35,7 +35,7 @@ func Route(man manager.KaraokeManager) *gin.Engine {
 
 	//Admin group
 	adming := router.Group("/admin", gin.BasicAuth(gin.Accounts{
-		"admin": "twintailsniconiconi",
+		"admin": man.Config.KaraokeConfig.AdminPass,
 	}))
 	RouteAdmin(adming)
 

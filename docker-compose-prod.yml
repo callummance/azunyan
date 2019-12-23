@@ -15,6 +15,7 @@ services:
       - dbaddr=mongodb://database:27017
       - dbname=azunyan
       - webport=8080
+      - GIN_MODE=release
 
   database:
     image: 'mongo'
