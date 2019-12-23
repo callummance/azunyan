@@ -1,0 +1,52 @@
+version: "3.7"
+services:
+  azunyan:
+    build: .
+    image: azunyan
+    ports:
+      - target: 8080
+        published: 8080
+        protocol: tcp
+        mode: host
+    secrets:
+      - source: conf_file
+        target: azunyan_conf
+    environment:
+      - dbaddr=mongodb://database:27017
+      - dbname=azunyan
+      - webport=8080
+      - GIN_MODE=release
+
+  database:
+    image: 'mongo'
+    environment: 
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+      - MONGO_INITDB_DATABASE=azunyan
+    volumes:
+      - ./container-scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - ./data/db:/data/db
+    command: mongod --logpath=/dev/null
+
+  openssh-server:
+    image: linuxserver/openssh-server
+    environment:
+      - PUID=1000
+      - GUID=1000
+      - TZ=Europe/London
+      - PASSWORD_ACCESS=true
+      - USER_NAME=azunyan
+      - USER_PASSWORD_FILE=/run/secrets/ssh_password
+    volumes:
+      - ./container-scripts/enable_portforward.sh:/config/custom-cont-init.d/pf.sh
+    ports:
+      - 2222:2222
+    restart: unless-stopped
+    secrets:
+      - ssh_password
+
+secrets:
+  conf_file:
+    file: "./azunyan.conf"
+  ssh_password:
+    file: "./ssh_pass.conf"
