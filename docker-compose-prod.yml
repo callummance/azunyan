@@ -1,8 +1,7 @@
 version: "3.7"
 services:
   azunyan:
-    build: .
-    image: azunyan
+    image: 'tailred/azunyan'
     ports:
       - target: 8080
         published: 8080
