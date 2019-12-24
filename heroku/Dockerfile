@@ -1,32 +1,37 @@
-FROM golang:1.13-buster
+#######################
+# BACKEND BUILD STAGE #
+#######################
+FROM golang:1.13-buster as golang-builder
 
-# Install mongodb
-RUN apt update && apt -y install gnupg2 && \
-    wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add -
+# Get latest from GitHub
+RUN mkdir -p /go/src/github.com/callummance/ && cd /go/src/github.com/callummance/ && \
+    git clone https://github.com/callummance/azunyan.git
 
-RUN echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/4.2 main" | tee /etc/apt/sources.list.d/mongodb-org.list
-
-RUN apt update && apt -y install mongodb-org
-
-RUN apt -y install nodejs npm && npm config set unsafe-perm true && npm install -g yarn grunt-cli 
-
-#Get the latest version from git
-RUN go get -u github.com/callummance/azunyan
-
-#Include files from host
-ADD . /go/src/github.com/callummance/azunyan
-
-#Get golang deps
+#Get golang deps and build application
 RUN go get /go/src/github.com/callummance/azunyan
-RUN go install -i github.com/callummance/azunyan
+RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build /go/src/github.com/callummance/azunyan
 
-#Change pwd so that static files work fine
+#######################
+# FRONTEND BUILD STAGE #
+#######################
+RUN apt update && apt -y install nodejs npm && \
+    npm config set unsafe-perm true && npm install -g yarn grunt-cli
 WORKDIR /go/src/github.com/callummance/azunyan/static/frontend
-
-#Get frontend deps
 RUN yarn
 
-WORKDIR /go/src/github.com/callummance/azunyan/
-RUN chmod +x heroku/start.sh
+#############
+# RUN STAGE #
+#############
+FROM mvertes/alpine-mongo
+RUN apk add --no-cache bash
 
-ENTRYPOINT ./heroku/start.sh
+WORKDIR /root
+COPY --from=golang-builder /go/azunyan .
+COPY --from=golang-builder /go/src/github.com/callummance/azunyan/static/frontend ./static/frontend
+COPY --from=golang-builder /go/src/github.com/callummance/azunyan/heroku/start.sh .
+COPY --from=golang-builder /go/src/github.com/callummance/azunyan/azunyan.conf .
+COPY --from=golang-builder /go/src/github.com/callummance/azunyan/ssh_pass.conf .
+COPY --from=golang-builder /go/src/github.com/callummance/azunyan/container-scripts ./container-scripts
+
+RUN chmod +x ./start.sh
+ENTRYPOINT ./start.sh
