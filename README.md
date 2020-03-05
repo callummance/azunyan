@@ -1,6 +1,26 @@
 # Azunyan
 A song request and queueing system for karaoke, written for ICAS.
 
+## Quick run
+If you just need to get a prebuilt copy of azunyan up and running as fast as possible, the Docker Hub image is going to be the way to go.
+
+After ensuring you have docker installed and set up, you will first need to fetch the docker-compose file with the following command:
+```bash
+curl https://raw.githubusercontent.com/callummance/azunyan/master/docker-compose-prod.yml -o docker-compose.yml
+```
+At this point you will need to create an `azunyan.conf` and a `ssh_pass.conf` file. The first contains config for the karaoke server itself, wheras the latter just contains the password which may be used to ssh into the docker network (useful for adding new songs). You can fetch examples of both by executing:
+```bash
+curl -O https://raw.githubusercontent.com/callummance/azunyan/master/ssh_pass.conf
+curl -O https://raw.githubusercontent.com/callummance/azunyan/master/azunyan.conf
+```
+You will, however, want to change the contents of both of these for security reasons.
+
+Finally, to start the queue system simply run
+```bash
+docker-compose up
+```
+
+
 ## Getting started
 Dependencies:
 - npm
