@@ -1,8 +1,10 @@
 package webserver
 
 import (
-	"net"
+	"io/ioutil"
+	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/callummance/azunyan/manager"
 	"github.com/gin-gonic/gin"
@@ -137,14 +139,36 @@ func ipAddressEndpoint(c *gin.Context) {
 	c.String(200, getIPAddress(env))
 }
 
+/* This function will assume we are in an Amazon EC2 instance
+ * and query the Amazon instance metadata service first. If the request times out
+ * then we default to the usual method of obtaining the server IP address
+ */
 func getIPAddress(env *manager.KaraokeManager) string {
-	conn, err := net.Dial("udp", "8.8.8.8:80")
+	ec2IPv4URL := "http://169.254.169.254/latest/meta-data/public-ipv4"
+	defaultExternalIPAddressURL := "http://ipconfig.me"
+	ipv4 := sendGetRequest(env, ec2IPv4URL)
+	if ipv4 != "" {
+		return ipv4
+	}
+	return sendGetRequest(env, defaultExternalIPAddressURL)
+}
+
+func sendGetRequest(env *manager.KaraokeManager, url string) string {
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		env.Logger.Printf("%q", err)
 		return ""
 	}
-	defer conn.Close()
 
-	localAddr := conn.LocalAddr().(*net.UDPAddr)
-	return localAddr.IP.String()
+	req.Header.Add("cache-control", "no-cache")
+	client := &http.Client{Timeout: 5 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		env.Logger.Printf("%q", err)
+		return ""
+	}
+
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	return string(body)
 }
