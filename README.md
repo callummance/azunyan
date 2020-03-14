@@ -111,7 +111,8 @@ Note: By default the docker container will start the server on port 8080. If dep
 ### Heroku
 It is also possible to deploy the docker container to Heroku. The advantages to this is you can get your own free heroku domain name
 and no need to specify port 8080. Furthermore, you don't need your own server which altogether means it'll be free to run.
-However, the cons is accessing the MongoDB is much slower (1-3 second delays) due to the fact that the MongoDB is remote so requires
+However, the cons is accessing the MongoDB is much slower (1-3 second delays) due to the fact that Heroku cannot install the MongoDB 
+on the same server that is hosting the application. This means the database is remote to the app so requires
 communication via internet. As such, we do not recommend this strategy if a lot of people are expected to be requesting songs at the
 same time.
 To deploy to Heroku, first install the Heroku cli:
@@ -128,4 +129,4 @@ heroku ps:scale web=1
 
 Useful hints when debugging:
 Remember to do a hard refresh in the browser to see changes in JS files.
-`docker-compose system prune -af` can help if you want to completely rebuild the docker containers.
+`docker system prune -af` can help if you want to completely rebuild the docker containers.
