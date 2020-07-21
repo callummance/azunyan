@@ -47,7 +47,7 @@ These are required to run the app:
 
 ### Rough installation notes for Ubuntu 16.04
 
-Follow the below steps if you want to manually build the project for development. If you wish to just run Azunyan, then the docker-compose section detailed lower down is recommended as it will save you a lot of setup effort.
+Follow the below steps if you want to manually build the project for development. If you wish to just run Azunyan, then the Quick Run section detailed above is recommended as it will save you a lot of setup effort.
 
 ```bash
 sudo apt install golang-1.9 # This actually installs the go binary to /usr/lib for some reason so we will need to do a symlink
@@ -121,6 +121,6 @@ heroku/deploy_to_heroku.sh
 heroku ps:scale web=1
 ```
 
-Useful hints when debugging:
+### Useful hints when debugging:
 Remember to do a hard refresh in the browser to see changes in JS files.
 `docker system prune -af` can help if you want to completely rebuild the docker containers.
