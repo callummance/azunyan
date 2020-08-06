@@ -27,3 +27,6 @@ data/db/*
 
 #Vendor modules
 vendor
+
+# configuration files
+azunyan.conf
