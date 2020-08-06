@@ -11,7 +11,8 @@ curl https://raw.githubusercontent.com/callummance/azunyan/master/docker-compose
 At this point you will need to create an `azunyan.conf` and a `ssh_pass.conf` file. The first contains config for the karaoke server itself, wheras the latter just contains the password which may be used to ssh into the docker network (useful for adding new songs). You can fetch examples of both by executing:
 ```bash
 curl -O https://raw.githubusercontent.com/callummance/azunyan/master/ssh_pass.conf
-curl -O https://raw.githubusercontent.com/callummance/azunyan/master/azunyan.conf
+curl -O https://raw.githubusercontent.com/callummance/azunyan/master/azunyan.conf.example
+mv azunyan.conf.example azunyan.conf
 ```
 You will, however, want to change the contents of both of these for security reasons.
 
@@ -78,12 +79,12 @@ On Windows:
 ```
 
 ### Configuration
-Configuration for this program is stored within `azunyan.conf`. The default file is populated with all fields supported. 
+Configuration for this program is stored within `azunyan.conf` (in the root of the repository). An example configuration is provided within the repository as `azunyan.conf.example`. Simply copy the example configuration, naming the copy `azunyan.conf`, to get started.
+
 `dbaddr`, `dbaddr`, and `dbcollection` have now been moved to environmental variables to allow deployment to Heroku. These can be included in a `.env` file. An example `.env` file can be seen in `.env-example` (Note in MongoDB, a table is known as a 'collection')
 
 ### Docker
 First, you need to modify the configuration file as described above.
-
 
 Install Docker and latest Docker-Compose:
 ```bash
