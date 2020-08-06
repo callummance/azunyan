@@ -1,7 +1,9 @@
 version: "3.7"
 services:
   azunyan:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: azunyan
     ports:
       - target: 8080

@@ -2,13 +2,10 @@
 # yarn lockfile v1
 
 
-"@bower_components/flag-icon-css@lipis/flag-icon-css#^3.1.0":
-  version "3.2.1"
-  resolved "https://codeload.github.com/lipis/flag-icon-css/tar.gz/dcf77c57d0a98d4474356408f33571bbbec37961"
-
-"@bower_components/tingle@robinparisi/tingle#^0.13.2":
-  version "0.13.2"
-  resolved "https://codeload.github.com/robinparisi/tingle/tar.gz/43d6d9f0d3815ce24f89cd3f72f5989afdc91ba9"
+flag-icon-css@^3.3.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/flag-icon-css/-/flag-icon-css-3.5.0.tgz#430747d5cb91e60babf85494de99173c16dc7cf2"
+  integrity sha512-pgJnJLrtb0tcDgU1fzGaQXmR8h++nXvILJ+r5SmOXaaL/2pocunQo2a8TAXhjQnBpRLPtZ1KCz/TYpqeNuE2ew==
 
 jquery-lazy@^1.7.10:
   version "1.7.10"
@@ -21,3 +18,8 @@ jquery@>=1.7.2:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.3.1.tgz#958ce29e81c9790f31be7792df5d4d95fc57fbca"
   integrity sha512-Ubldcmxp5np52/ENotGxlLe6aGMvmF4R8S6tZjsP6Knsaxd/xp3Zrh50cG93lR6nPXyUFwzN3ZSOQI0wRJNdGg==
+
+tingle.js@^0.14.0:
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/tingle.js/-/tingle.js-0.14.0.tgz#111bf8529f72484031b814b15e1a6ffb9dac2cee"
+  integrity sha512-etSON7XEz5QI5mvfAE+ibK9rOCouR0E7UpVeEkCfD0UFPY0+34fYGslyUH3b7g5PC5SZmfg9P93VSSvESacrpg==
