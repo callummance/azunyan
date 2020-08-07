@@ -1,7 +1,9 @@
 version: "3.7"
 services:
   azunyan:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: azunyan
     ports:
       - target: 8080
@@ -24,7 +26,7 @@ services:
       - MONGO_INITDB_DATABASE=azunyan
     volumes:
       - ./container-scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
-      - ./data/db:/data/db
+      - mongodata:/data/db
     command: mongod --logpath=/dev/null
 
   openssh-server:
@@ -43,7 +45,8 @@ services:
     restart: unless-stopped
     secrets:
       - ssh_password
-
+volumes:
+  mongodata:
 secrets:
   conf_file:
     file: "./azunyan.conf"

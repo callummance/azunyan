@@ -1,0 +1,39 @@
+#######################
+# BACKEND BUILD STAGE #
+#######################
+FROM golang:1.13-buster as golang-builder
+
+# Add everything in root directory to container
+RUN mkdir /app
+COPY . /app
+RUN find /app
+WORKDIR /app
+
+# Get golang deps and build application
+RUN go mod download
+RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o azunyan .
+
+#######################
+# FRONTEND BUILD STAGE #
+#######################
+RUN apt update && apt -y install nodejs npm && \
+    npm config set unsafe-perm true && npm install -g yarn grunt-cli
+WORKDIR /app/static/frontend
+RUN yarn
+
+#############
+# RUN STAGE #
+#############
+FROM mvertes/alpine-mongo
+RUN apk add --no-cache bash
+
+WORKDIR /root
+COPY --from=golang-builder /app/azunyan .
+COPY --from=golang-builder /app/static/frontend ./static/frontend
+COPY --from=golang-builder /app/heroku/start.sh .
+COPY --from=golang-builder /app/azunyan.conf.example ./azunyan.conf
+COPY --from=golang-builder /app/ssh_pass.conf.example ./ssh_pass.conf
+COPY --from=golang-builder /app/container-scripts ./container-scripts
+
+RUN chmod +x ./start.sh
+ENTRYPOINT ./start.sh
