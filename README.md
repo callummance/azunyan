@@ -10,6 +10,11 @@ sudo apt install docker.io
 sudo curl -L https://github.com/docker/compose/releases/download/1.25.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+# Create docker group if it doesn't exist
+sudo groupadd docker
+sudo usermod -aG docker $(whoami)
+# Log out and in again so changes take effect
+sudo systemctl start docker
 ```
 Clone the project
 ```
@@ -22,9 +27,8 @@ curl https://raw.githubusercontent.com/callummance/azunyan/master/docker-compose
 ```
 At this point you will need to create an `azunyan.conf` and a `ssh_pass.conf` file. The first contains config for the karaoke server itself, wheras the latter just contains the password which may be used to ssh into the docker network (useful for adding new songs). You can fetch examples of both by executing:
 ```bash
-curl -O https://raw.githubusercontent.com/callummance/azunyan/master/ssh_pass.conf
-curl -O https://raw.githubusercontent.com/callummance/azunyan/master/azunyan.conf.example
-mv azunyan.conf.example azunyan.conf
+curl https://raw.githubusercontent.com/callummance/azunyan/master/ssh_pass.conf.example -o ssh_pass.conf
+curl https://raw.githubusercontent.com/callummance/azunyan/master/azunyan.conf.example -o azunyan.conf
 ```
 You will, however, want to change the contents of both of these for security reasons.
 
