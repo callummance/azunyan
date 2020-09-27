@@ -2,6 +2,8 @@ package webserver
 
 import (
 	"fmt"
+	"net/http"
+	"time"
 
 	"github.com/callummance/azunyan/db"
 	"github.com/callummance/azunyan/manager"
@@ -71,9 +73,10 @@ func makeRequestEndpoint(c *gin.Context) {
 	}
 }
 
+//TODO: Delete this as currently unused?
 //Retrieves JSON object containing the singer name and the song id from a request,
 //then adds the request to the queue.
-//If a requiest for the same song by the same person has already been made,
+//If a request for the same song by the same person has already been made,
 //return an error message unless the relevant flag has been included.
 //Otherwise, return a JSON object containing details on the new request's place
 //in the queue.
@@ -97,7 +100,25 @@ func searchSongsEndpoint(c *gin.Context) {
 		m.Logger.Printf("Failed to grab environment from Context variable")
 		c.String(500, "{\"message\": \"internal failure\"")
 	}
-
+	state, err := db.GetEngineState(m, m.Config.KaraokeConfig.SessionName)
+	if err != nil {
+		m.Logger.Printf("searchSongsEndpoint: Failed to get state due to error %q", err)
+	}
+	songsLastUpdated := state.SongsLastUpdated.Time().Round(time.Second)
+	httpDate := songsLastUpdated.Format(time.RFC1123)
+	requestModifiedSinceHeader := c.Request.Header.Get("If-Modified-Since")
+	if requestModifiedSinceHeader != "" {
+		requestModifiedSince, err := time.Parse(time.RFC1123, requestModifiedSinceHeader)
+		if err != nil {
+			m.Logger.Printf("searchSongsEndpoint: Error parsing the If-Modified-Since date in the request header %q", err)
+		} else if songsLastUpdated.Before(requestModifiedSince.Round(time.Second)) ||
+			songsLastUpdated.Equal(requestModifiedSince.Round(time.Second)) {
+			c.String(http.StatusNotModified, "")
+			return
+		}
+	}
 	searchString := c.Request.URL.Query().Get("q")
+	c.Header("cache-control", "public, max-age=86400")
+	c.Header("Last-Modified", httpDate)
 	c.JSON(201, m.GetSearchResults(searchString))
 }
