@@ -9,6 +9,7 @@ import (
 
 	"github.com/callummance/azunyan/models"
 	"github.com/globalsign/mgo/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -51,8 +52,34 @@ func GetEngineState(env databaseConfig, sessionName string) (*models.State, erro
 	}
 }
 
+// InitialiseState initialises the session state in the database. If an existing state collection already exists
+// then it re-uses the SongsLastUpdated field, otherwise it uses the current time.
 func InitialiseState(env databaseConfig) {
-	UpdateEngineState(env, models.InitSession(env.GetConfig()))
+	var res models.State
+	hasLastUpdatedField := false
+	initialSessionStateConfig := models.InitSession(env.GetConfig())
+
+	col := getStateCollection(env)
+	if col != nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		singleResult := col.FindOne(ctx, bson.M{})
+		err := singleResult.Err()
+		if err != nil {
+			env.GetLog().Printf("Database failure whist fetching state: %s", err)
+		} else {
+			singleResult.Decode(&res)
+			if res.SongsLastUpdated != 0 {
+				hasLastUpdatedField = true
+			}
+		}
+	}
+	if hasLastUpdatedField {
+		initialSessionStateConfig.SongsLastUpdated = res.SongsLastUpdated
+	} else {
+		initialSessionStateConfig.SongsLastUpdated = primitive.NewDateTimeFromTime(time.Now())
+	}
+	UpdateEngineState(env, initialSessionStateConfig)
 }
 
 func getStateCollection(env databaseConfig) *mongo.Collection {

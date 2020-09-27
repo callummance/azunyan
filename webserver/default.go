@@ -7,7 +7,7 @@ import (
 )
 
 //ForwardRoot handles the root site, and forwards to either the song listing or
-//the requests page depending on whether requrests have been enabled.
+//the requests page depending on whether requests have been enabled.
 func ForwardRoot(c *gin.Context) {
 	env, ok := c.MustGet("manager").(*manager.KaraokeManager)
 	if !ok {

@@ -2,16 +2,18 @@ package models
 
 import (
 	"github.com/callummance/azunyan/config"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 //State contains data on the current state of the karaoke manager.
 type State struct {
-	SessionName    string     `json:"sessionname" bson:"sessionname"`
-	NowPlaying     *QueueItem `json:"nowplaying" bson:"nowplaying,omitempty"`
-	NoSingers      int        `json:"nosingers" bson:"nosingers"`
-	IsActive       bool       `json:"isactive" bson:"isactive"`
-	RequestsActive bool       `json:"reqactive" bson:"reqactive"`
-	AllowingDupes  bool       `json:"allowdupes" bson:"allowdupes"`
+	SessionName      string             `json:"sessionname" bson:"sessionname"`
+	NowPlaying       *QueueItem         `json:"nowplaying" bson:"nowplaying,omitempty"`
+	NoSingers        int                `json:"nosingers" bson:"nosingers"`
+	IsActive         bool               `json:"isactive" bson:"isactive"`
+	RequestsActive   bool               `json:"reqactive" bson:"reqactive"`
+	AllowingDupes    bool               `json:"allowdupes" bson:"allowdupes"`
+	SongsLastUpdated primitive.DateTime `json:"songslastupdated" bson:"songslastupdated"`
 }
 
 //InitSession creates a new State struct with sane defaults given a config struct.

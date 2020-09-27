@@ -119,6 +119,7 @@ func PopNextSong(m *KaraokeManager) (*models.QueueItem, error) {
 		newState.IsActive = true
 		newState.RequestsActive = true
 		newState.NoSingers = origState.NoSingers
+		newState.SongsLastUpdated = origState.SongsLastUpdated
 		db.ClearEngineState(m)
 		db.UpdateEngineState(m, newState)
 	}
