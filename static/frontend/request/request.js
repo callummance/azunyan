@@ -1,3 +1,4 @@
+
 jQuery(document).ready(function ($) {
   var searchBox = $("#songSelect");
   var resultsList = $("#results");
@@ -6,19 +7,6 @@ jQuery(document).ready(function ($) {
   var latestRecieved = 0;
 
   var searchTimeoutReady = true;
-
-  var lazyInstance = $("#results .albumimage").Lazy({
-    effect: "fadeIn",
-    visibleOnly: true,
-    chainable: false,
-    autoDestroy: false,
-    threshold: 0,
-    appendScroll: $("#results"),
-    beforeLoad: function (elem, resp) {
-      console.log("Now loading element");
-      console.log(elem);
-    },
-  });
 
   // Set an onclick handler on the results box
   $("#results").on("click", "article", function (event) {
@@ -85,20 +73,25 @@ jQuery(document).ready(function ($) {
     results.forEach(function (result) {
       resultsList.append(newResults[result.ID]);
     });
+    prepareElements(); // Call polyfill prepare elements
     searchResults = newResults;
     latestRecieved = setNo;
-    lazyInstance.update();
-  }
-
-  function setLazy(img) {
-    lazyInstance.addItems(img);
   }
 
   function createResultCard(result, card) {
     let imgurl = "/i/cover/" + result.ID;
     let imgobj = $(document.createElement("img"));
     imgobj.addClass("albumimage");
-    imgobj.attr("data-src", imgurl);
+    imgobj.attr("loading", "lazy");
+    if ('loading' in HTMLImageElement.prototype && 'loading' in HTMLIFrameElement.prototype) {
+      imgobj.attr("src", imgurl);
+    } else {
+      imgobj.attr("data-lazy-src", imgurl);
+    }
+    imgobj.attr("alt", "..");
+    let lazyloadpolyfill = $(document.createElement("noscript"));
+    lazyloadpolyfill.addClass("loading-lazy");
+    lazyloadpolyfill.append(imgobj);
     let countryobj = $(document.createElement("div"));
     countryobj.addClass("cardlang");
     countryobj.addClass("flag-icon-background");
@@ -115,12 +108,11 @@ jQuery(document).ready(function ($) {
     infoobj.append(titleobj);
     infoobj.append(artistobj);
 
-    card.append(imgobj);
+    card.append(lazyloadpolyfill);
     card.append(countryobj);
     card.append(infoobj);
     card.attr("id", result.ID);
 
-    setLazy(imgobj);
   }
 
   function selectedSong(id) {
