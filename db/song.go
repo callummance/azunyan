@@ -170,7 +170,7 @@ func GetSongCoverByID(env databaseConfig, sid primitive.ObjectID) ([]byte, error
 // Requires an index to be created on the title and artist fields
 func GetSongsByTextSearch(env databaseConfig, text string) ([]models.Song, error) {
 	collection := getCollection(env)
-	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 16*time.Second)
 	defer cancel()
 	cursor, err := collection.Find(ctx, bson.M{"$text": bson.M{"$search": text}})
 	if err != nil {

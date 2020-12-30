@@ -1,9 +1,10 @@
 {
-  "name": "azunyan-frontend",
-  "license": "GPL-2.0 or later",
+  "name": "azunyan",
+  "version": "1.0.0",
+  "description": "Karaoke Queuing system",
+  "main": "azunyan.go",
   "dependencies": {
     "flag-icon-css": "^3.3.0",
-    "jquery-lazy": "^1.7.10",
     "tingle.js": "^0.14.0"
   },
   "engines": {

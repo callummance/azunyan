@@ -81,8 +81,7 @@ curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
 # Build the app
 cd $GOPATH/github.com/callummance/azunyan
-npm install
-dep ensure
+cd static/frontend && npm install
 go build
 ```
 
