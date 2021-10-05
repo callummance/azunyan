@@ -1,0 +1,275 @@
+openapi: 3.0.0
+info:
+  version: 0.0.2
+  title: Azunyan API
+  description: User and Admin API endpoints for azunyan karaoke queue
+
+components:
+  securitySchemes:
+    adminBasicAuth:
+      type: http
+      scheme: basic
+
+  ####################
+  ###### Types #######
+  ####################
+  schemas:
+    Song:
+      type: object
+      properties:
+        ID:
+          type: string
+        title:
+          type: string
+        artist:
+          type: string
+        isDuet:
+          type: boolean
+        language:
+          type: string
+        bpm:
+          type: number
+        genre:
+          type: string
+        source:
+          type: string
+        year:
+          type: integer
+      required:
+        - ID
+        - title
+        - artist
+
+    QueueItem:
+      type: object
+      properties:
+        queueitemid:
+          type: string
+        ids:
+          type: array
+          items:
+            type: string
+        sid:
+          type: string
+        title:
+          type: string
+        artist:
+          type: string
+        singers:
+          type: array
+          items:
+            type: string
+        times:
+          type: array
+          items:
+            type: string
+            format: date-time
+
+paths:
+  /api/getsongslist:
+    description: Returns a list of songs in the DB
+    get:
+      responses:
+        "200":
+          description: Successfully returned a list of songs in the DB
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Song"
+  /api/nosingers:
+    description: Returns the number of concurrent singers that has been configured
+    get:
+      responses:
+        "200":
+          description: Successfully returned the singer count
+          content:
+            text/plain:
+              schema:
+                type: integer
+                example: 2
+  /api/queuestream:
+    description: Starts a long poll that returns updates to the current queue, current song and number of singers
+    get:
+      responses:
+        "200":
+          description: Long poll data
+          content:
+            text/event-stream:
+              schema:
+                type: array
+                format: event-stream
+                items:
+                  oneOf:
+                    - type: object
+                      description: "queue"
+                      properties:
+                        complete:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/QueueItem"
+                        partial:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/QueueItem"
+
+                    - type: object
+                      description: "cur"
+                      properties:
+                        complete:
+                          $ref: "#/components/schemas/QueueItem"
+
+                    - type: object
+                      description: "singers"
+                      properties:
+                        complete:
+                          type: integer
+                          example: 2
+  /api/searchsongs:
+    description: Returns a list of songs which match the provided search term
+    get:
+      parameters:
+        - name: queue
+          in: query
+          description: Search term
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of matching songs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Song"
+  /api/addrequest:
+    description: Adds a new song request to the list
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                songid:
+                  type: string
+                singer:
+                  type: string
+      responses:
+        "200":
+          description: Created
+        "403":
+          description: Requests not yet open
+        "404":
+          description: Invalid data
+
+  /i/cover/{albumid}:
+    description: Returns the cover art for `albumid`
+    get:
+      responses:
+        "200":
+          description: The cover art
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+
+  /admin/active:
+    description: Sets whether the display and queue system should be active
+    post:
+      security:
+        - adminBasicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                active:
+                  type: boolean
+      responses:
+        "201":
+          description: Successfully updated status
+  /admin/req_active:
+    description: Sets whether the system should allow requests
+    post:
+      security:
+        - adminBasicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                active:
+                  type: boolean
+      responses:
+        "201":
+          description: Successfully updated status
+  /admin/advance:
+    description: Advances the currently playing song
+    post:
+      security:
+        - adminBasicAuth: []
+      responses:
+        "201":
+          description: Success
+  /admin/remove_singer:
+    description: Removes all requests from any singers with the provided name
+    post:
+      security:
+        - adminBasicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                singer:
+                  type: string
+      responses:
+        "201":
+          description: Success
+  /admin/reset_queue:
+    description: Removes all requests from the song queue
+    post:
+      security:
+        - adminBasicAuth: []
+      responses:
+        "201":
+          description: Success
+  /admin/singers/{number}:
+    description: Sets the number of concurrent singers allowed
+    post:
+      security:
+        - adminBasicAuth: []
+      responses:
+        "201":
+          description: Success
+  /admin/allowdupes/{shouldAllow}:
+    description: Sets whether duplicate song requests should be allowed
+    post:
+      security:
+        - adminBasicAuth: []
+      responses:
+        "201":
+          description: Success
+  /admin/ipaddress:
+    description: Returns the server's world-accessible IP
+    get:
+      security:
+        - adminBasicAuth: []
+      responses:
+        "200":
+          description: Server's world-accessible IP Address
+          content:
+            text/plain:
+              schema:
+                type: string
