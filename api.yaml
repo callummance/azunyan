@@ -169,6 +169,13 @@ paths:
   /i/cover/{albumid}:
     description: Returns the cover art for `albumid`
     get:
+      parameters:
+        - in: path
+          name: albumid
+          required: true
+          schema:
+            type: string
+          description: The album whose cover should be returned
       responses:
         "200":
           description: The cover art
@@ -248,6 +255,13 @@ paths:
   /admin/singers/{number}:
     description: Sets the number of concurrent singers allowed
     post:
+      parameters:
+        - in: path
+          name: number
+          required: true
+          schema:
+            type: integer
+          description: The number of singers who should be allowed concurrently
       security:
         - adminBasicAuth: []
       responses:
@@ -256,6 +270,13 @@ paths:
   /admin/allowdupes/{shouldAllow}:
     description: Sets whether duplicate song requests should be allowed
     post:
+      parameters:
+        - in: path
+          name: shouldAllow
+          required: true
+          schema:
+            type: boolean
+          description: Whether duplicate requests should be allowed
       security:
         - adminBasicAuth: []
       responses:
