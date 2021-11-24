@@ -186,7 +186,7 @@ function makePartialQueueDivs(queue, prevQueueDivs, nowPlaying, targetDiv, noSin
     let newQueueDisplay = {};
     if (queue.partial != null) {
       queue.partial.map((q_entry, index) => {
-          itemid = q_entry.ids.join(".");
+          itemid = q_entry.ids.join("");
           if (!prevQueueDivs.hasOwnProperty(itemid)) {
               //Make a new div
               let newdiv = $('<div/>')
